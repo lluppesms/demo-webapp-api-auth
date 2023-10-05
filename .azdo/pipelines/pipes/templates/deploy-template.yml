@@ -1,0 +1,43 @@
+# ----------------------------------------------------------------------------------------------------
+# Template to deploy the WebAPI and WebApp to Azure
+# ----------------------------------------------------------------------------------------------------
+parameters: 
+- name: stageName
+  default: 'CI'
+- name: environment
+  default: 'CI'
+- name: azureSubscription
+  default: ''
+- name: webAppName
+  default: ''
+- name: webAppPackageName
+  default: ''  
+- name: apiAppName
+  default: ''
+- name: apiPackageName
+  default: ''  
+
+# ----------------------------------------------------------------------------------------------------
+jobs:
+- deployment: Deploy
+  displayName: Deploy
+  environment: ${{ parameters.environment }}
+
+- job: DeployApps
+  displayName: Deploy Apps
+  steps:
+  - task: AzureRmWebAppDeployment@4
+    displayName: '1. Deploy API'
+    inputs:
+      azureSubscription: ${{ parameters.azureSubscription }}
+      WebAppName: ${{ parameters.apiAppName }}
+      package: '$(Pipeline.Workspace)/build/App/${{ parameters.apiPackageName }}'
+      AppSettings: ''
+
+  - task: AzureRmWebAppDeployment@4
+    displayName: '2. Deploy WebApp'
+    inputs:
+      azureSubscription: ${{ parameters.azureSubscription }}
+      WebAppName: ${{ parameters.webAppName }}
+      package: '$(Pipeline.Workspace)/build/App/${{ parameters.webAppPackageName }}'
+      AppSettings: ''

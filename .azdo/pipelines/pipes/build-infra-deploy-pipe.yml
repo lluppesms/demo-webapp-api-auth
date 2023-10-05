@@ -1,0 +1,88 @@
+# ------------------------------------------------------------------------------------------------------------------------
+# Pipe Template to build and deploy the entire application
+# ------------------------------------------------------------------------------------------------------------------------
+parameters:
+variables:
+- name: azureSubscription
+  default: ''
+- name: webAppName
+  default: ''
+- name: apiAppName
+  default: ''
+- name: apiAppApimName
+  default: ''
+- name: organizationName
+  default: ''
+- name: adminEmail
+  default: ''
+- name: resourceGroupName
+  default: ''
+- name: webAppSourcePath
+  default: ''
+- name: webAppPackageName
+  default: ''
+- name: apiSourcePath
+  default: ''
+- name: apiPackageName
+  default: ''
+- name: region
+  default: ''
+
+stages:
+# ------------------------------------------------------------------------------------------------------------------------
+- stage: BuildApp
+  displayName: Build App
+  jobs:
+
+  - ${{ if or(or(eq(lower(parameters.runDevSecOpsScan), 'true'), eq(lower(parameters.runPsRuleScan), 'true')), eq(lower(parameters.runGHAzDOScan), 'true')) }}:
+    - template: templates/scan-code-template.yml
+      parameters:
+        environmentName: 'DEV'
+        runDevSecOpsScan: ${{ parameters.runDevSecOpsScan }}
+        runPsRuleScan: ${{ parameters.runPsRuleScan }}
+        runGHAzDOScan: ${{ parameters.runGHAzDOScan }}
+        workingDirectoryCode: ${{ parameters.workingDirectoryCode }}
+        workingDirectoryInfra: ${{ parameters.workingDirectoryInfra }}
+
+  - template: templates\build-webapi-template.yml
+    parameters:
+      buildConfiguration: 'Release'
+      rootDirectory: ${{ variables.apiSourcePath }}
+
+  - template: templates\build-webapp-template.yml
+    parameters:
+      buildConfiguration: 'Release'
+      rootDirectory: ${{ variables.apiSourcePath }}
+
+# ------------------------------------------------------------------------------------------------------------------------
+- stage: CreateInfra
+  displayName: Create Infra
+  dependsOn: BuildApp
+  condition: succeeded('BuildApp')
+  jobs:
+  - template: templates\infra-template.yml
+    parameters:
+      azureSubscription: ${{ variables.azureSubscription }}
+      webAppName:  ${{ variables.webAppName }}
+      apiAppName:  ${{ variables.apiAppName }}
+      apiAppApimName:  ${{ variables.apiAppApimName }}
+      organizationName:  ${{ variables.organizationName }}
+      adminEmail:  ${{ variables.adminEmail }}
+      resourceGroupName:  ${{ variables.resourceGroupName }}
+      region: ${{ variables.region }}
+      apiPackageName: ${{ variables.apiPackageName }}
+      webAppPackageName: ${{ variables.webAppPackageName }}
+
+# ------------------------------------------------------------------------------------------------------------------------
+- stage: DeployApp
+  displayName: Deploy App
+  dependsOn: CreateInfra
+  condition: succeeded('CreateInfra')
+  jobs:
+  - template: templates\deploy-template.yml
+    parameters:
+      azureSubscription: ${{ variables.azureSubscription }}
+      webAppName:  ${{ variables.webAppName }}
+      webAppPackageName: ${{ variables.webAppPackageName }}
+      apiAppName:  ${{ variables.apiAppName }}
+      apiPackageName: ${{ variables.apiPackageName }}

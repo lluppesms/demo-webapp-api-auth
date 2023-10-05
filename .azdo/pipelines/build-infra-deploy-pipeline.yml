@@ -1,8 +1,28 @@
 # ------------------------------------------------------------------------------------------------------------------------
 # Pipeline to build and deploy the entire application
 # ------------------------------------------------------------------------------------------------------------------------
+name: $(date:yyyy).$(date:MM).$(date:dd)$(rev:.r)
+
+pool:
+  vmImage: windows-latest
+
+# ------------------------------------------------------------------------------------------------------------------------
 trigger: none
  
+parameters:
+  - name: runDevSecOpsScan
+    displayName: Run MS DevSecOps Scan
+    type: boolean
+    default: false
+  - name: runPsRuleScan
+    displayName: Run PSRule Bicep Scan
+    type: boolean
+    default: false
+  - name: runGHAzDOScan
+    displayName: Run GHAS Scan
+    type: boolean
+    default: false
+
 # ------------------------------------------------------------------------------------------------------------------------
 variables:
   # Lyle's variables
@@ -29,52 +49,28 @@ variables:
   apiSourcePath: '/services/Demo.API'
   apiPackageName: 'Demo.API.zip'
   region: 'East US'
-
-
+  workingDirectoryCode: '/services/Demo.WebUI'
+  workingDirectoryInfra: '/infra/'
+  
 stages:
 # ------------------------------------------------------------------------------------------------------------------------
-  - stage: BuildApp
-    displayName: Build App
-    jobs:
-    - template: templates\build-webapi-template.yml
-      parameters:
-        buildConfiguration: 'Release'
-        rootDirectory: ${{ variables.apiSourcePath }}
-
-    - template: templates\build-webapp-template.yml
-      parameters:
-        buildConfiguration: 'Release'
-        rootDirectory: ${{ variables.apiSourcePath }}
-
-# ------------------------------------------------------------------------------------------------------------------------
-  - stage: CreateInfra
-    displayName: Create Infra
-    dependsOn: BuildApp
-    condition: succeeded('BuildApp')
-    jobs:
-    - template: templates\infra-template.yml
-      parameters:
-        azureSubscription: ${{ variables.azureSubscription }}
-        webAppName:  ${{ variables.webAppName }}
-        apiAppName:  ${{ variables.apiAppName }}
-        apiAppApimName:  ${{ variables.apiAppApimName }}
-        organizationName:  ${{ variables.organizationName }}
-        adminEmail:  ${{ variables.adminEmail }}
-        resourceGroupName:  ${{ variables.resourceGroupName }}
-        region: ${{ variables.region }}
-        apiPackageName: ${{ variables.apiPackageName }}
-        webAppPackageName: ${{ variables.webAppPackageName }}
-
-# ------------------------------------------------------------------------------------------------------------------------
-  - stage: DeployApp
-    displayName: Deploy App
-    dependsOn: CreateInfra
-    condition: succeeded('CreateInfra')
-    jobs:
-    - template: templates\deploy-template.yml
-      parameters:
-        azureSubscription: ${{ variables.azureSubscription }}
-        webAppName:  ${{ variables.webAppName }}
-        webAppPackageName: ${{ variables.webAppPackageName }}
-        apiAppName:  ${{ variables.apiAppName }}
-        apiPackageName: ${{ variables.apiPackageName }}
+- template: pipes\build-webapi-pipe.yml
+  parameters:
+    buildConfiguration: 'Release'
+    apiRootDirectory: ${{ variables.apiSourcePath }}
+    webAppRootDirectory: ${{ variables.apiSourcePath }}
+    azureSubscription: ${{ variables.azureSubscription }}
+    webAppName:  ${{ variables.webAppName }}
+    apiAppName:  ${{ variables.apiAppName }}
+    apiAppApimName:  ${{ variables.apiAppApimName }}
+    organizationName:  ${{ variables.organizationName }}
+    adminEmail:  ${{ variables.adminEmail }}
+    resourceGroupName:  ${{ variables.resourceGroupName }}
+    region: ${{ variables.region }}
+    apiPackageName: ${{ variables.apiPackageName }}
+    webAppPackageName: ${{ variables.webAppPackageName }}
+    runDevSecOpsScan: ${{ parameters.runDevSecOpsScan }}
+    runPsRuleScan: ${{ parameters.runPsRuleScan }}
+    runGHAzDOScan: ${{ parameters.runGHAzDOScan }}
+    workingDirectoryCode: ${{ parameters.workingDirectoryCode }}
+    workingDirectoryInfra: ${{ parameters.workingDirectoryInfra }}
