@@ -19,12 +19,12 @@ parameters:
 
 # ----------------------------------------------------------------------------------------------------
 jobs:
-- deployment: Deploy
-  displayName: Deploy
+- deployment: DeployApps
+  displayName: Deploy Apps
   environment: ${{ parameters.environment }}
 
-- job: DeployApps
-  displayName: Deploy Apps
+- job: DeployAppsJob
+  displayName: Deploy Apps Job
   steps:
   - task: CmdLine@2
     inputs:

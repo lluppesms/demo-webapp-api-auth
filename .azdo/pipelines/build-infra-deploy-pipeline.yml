@@ -10,6 +10,14 @@ pool:
 trigger: none
  
 parameters:
+  - name: createInfra
+    displayName: Create Infra
+    type: boolean
+    default: true
+  - name: buildDeployApps
+    displayName: Build and Deploy Apps
+    type: boolean
+    default: false
   - name: runDevSecOpsScan
     displayName: Run MS DevSecOps Scan
     type: boolean
@@ -56,6 +64,11 @@ stages:
 # ------------------------------------------------------------------------------------------------------------------------
 - template: pipes/build-infra-deploy-pipe.yml
   parameters:
+    createInfra: ${{ parameters.createInfra }}
+    buildDeployApps: ${{ parameters.buildDeployApps }}
+    runDevSecOpsScan: ${{ parameters.runDevSecOpsScan }}
+    runGHAzDOScan: ${{ parameters.runGHAzDOScan }}
+
     apiRootDirectory: ${{ variables.apiSourcePath }}
     webAppRootDirectory: ${{ variables.apiSourcePath }}
     azureSubscription: ${{ variables.azureSubscription }}
@@ -70,7 +83,5 @@ stages:
     apiSourcePath: ${{ variables.apiSourcePath }}
     webAppPackageName: ${{ variables.webAppPackageName }}
     webAppSourcePath: ${{ variables.webAppSourcePath }}
-    runDevSecOpsScan: ${{ parameters.runDevSecOpsScan }}
-    runGHAzDOScan: ${{ parameters.runGHAzDOScan }}
     workingDirectoryCode: ${{ variables.workingDirectoryCode }}
     workingDirectoryInfra: ${{ variables.workingDirectoryInfra }}
