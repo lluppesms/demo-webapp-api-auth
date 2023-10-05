@@ -9,7 +9,7 @@ parameters:
 - name: buildConfiguration
   default: 'Release'
 - name: rootDirectory
-  default: '/services/Demo.WebUI'
+  default: ''
 
 # ----------------------------------------------------------------------------------------------------
 jobs:
@@ -22,7 +22,7 @@ jobs:
   - task: DotNetCoreCLI@2
     displayName: 'Build WebApp project'
     inputs:
-      projects: ' ${{ parameters.rootDirectory }}/**/*.csproj'
+      projects: ' ${{ parameters.rootDirectory }}/*.csproj'
       arguments: '--output publish_output --configuration Release'
 
   - task: DotNetCoreCLI@2
@@ -30,7 +30,7 @@ jobs:
     inputs:
       command: publish
       publishWebProjects: false
-      projects: '${{ parameters.rootDirectory }}/**/*.csproj'
+      projects: '${{ parameters.rootDirectory }}/*.csproj'
       arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)'
       
   - task: PublishPipelineArtifact@1
