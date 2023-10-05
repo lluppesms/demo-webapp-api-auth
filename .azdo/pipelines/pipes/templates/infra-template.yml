@@ -25,12 +25,33 @@ parameters:
 
 # ----------------------------------------------------------------------------------------------------
 jobs:
-- deployment: Infra
-  displayName: Infra
+- deployment: CreateInfra
+  displayName: Create Infra
   environment: ${{ parameters.environment }}
-- job: CreateInfra
-  displayName: CreateInfra
+- job: CreateInfraJob
+  displayName: Create Infra Job
   steps:
+
+- job: DeployApps
+  displayName: Deploy Apps
+  steps:
+  - task: CmdLine@2
+    inputs:
+      script: |
+        echo "stageName=${{ parameters.stageName }}"
+        echo "environment=${{ parameters.environment }}"
+        echo "azureSubscription=${{ parameters.azureSubscription }}"
+        echo "webAppName=${{ parameters.webAppName }}"
+        echo "apiAppAPIMName=${{ parameters.apiAppAPIMName }}"
+        echo "organizationName=${{ parameters.organizationName }}"
+        echo "adminEmail=${{ parameters.adminEmail }}"
+        echo "resourceGroupName=${{ parameters.resourceGroupName }}"
+        echo "region=${{ parameters.region }}"
+        echo "Directory of Pipeline.Workspace:"
+        dir  $(Pipeline.Workspace) /s
+    displayName: 'Display Variables and Tree'
+    continueOnError: true
+
   - task: AzureResourceGroupDeployment@2
     displayName: '1. Create APIM Consumption'
     inputs:
