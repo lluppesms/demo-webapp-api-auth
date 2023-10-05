@@ -89,8 +89,8 @@ stages:
 # ------------------------------------------------------------------------------------------------------------------------
 - stage: DeployApp
   displayName: Deploy App
-  dependsOn: CreateInfra
-  condition: succeeded('CreateInfra')
+  dependsOn: CreateAzureInfra
+  condition: succeeded('CreateAzureInfra')
   jobs:
   - template: templates/deploy-apps-template.yml
     parameters:
