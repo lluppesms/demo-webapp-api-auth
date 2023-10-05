@@ -56,12 +56,12 @@ stages:
   - template: templates/build-webapi-template.yml
     parameters:
       buildConfiguration: 'Release'
-      rootDirectory: ${{ variables.apiSourcePath }}
+      rootDirectory: ${{ parameters.apiSourcePath }}
 
   - template: templates/build-webapp-template.yml
     parameters:
       buildConfiguration: 'Release'
-      rootDirectory: ${{ variables.apiSourcePath }}
+      rootDirectory: ${{ parameters.apiSourcePath }}
 
 # ------------------------------------------------------------------------------------------------------------------------
 - stage: CreateInfra
@@ -71,16 +71,16 @@ stages:
   jobs:
   - template: templates/infra-template.yml
     parameters:
-      azureSubscription: ${{ variables.azureSubscription }}
-      webAppName:  ${{ variables.webAppName }}
-      apiAppName:  ${{ variables.apiAppName }}
-      apiAppApimName:  ${{ variables.apiAppApimName }}
-      organizationName:  ${{ variables.organizationName }}
-      adminEmail:  ${{ variables.adminEmail }}
-      resourceGroupName:  ${{ variables.resourceGroupName }}
-      region: ${{ variables.region }}
-      apiPackageName: ${{ variables.apiPackageName }}
-      webAppPackageName: ${{ variables.webAppPackageName }}
+      azureSubscription: ${{ parameters.azureSubscription }}
+      webAppName:  ${{ parameters.webAppName }}
+      apiAppName:  ${{ parameters.apiAppName }}
+      apiAppApimName:  ${{ parameters.apiAppApimName }}
+      organizationName:  ${{ parameters.organizationName }}
+      adminEmail:  ${{ parameters.adminEmail }}
+      resourceGroupName:  ${{ parameters.resourceGroupName }}
+      region: ${{ parameters.region }}
+      apiPackageName: ${{ parameters.apiPackageName }}
+      webAppPackageName: ${{ parameters.webAppPackageName }}
 
 # ------------------------------------------------------------------------------------------------------------------------
 - stage: DeployApp
@@ -90,8 +90,8 @@ stages:
   jobs:
   - template: templates/deploy-template.yml
     parameters:
-      azureSubscription: ${{ variables.azureSubscription }}
-      webAppName:  ${{ variables.webAppName }}
-      webAppPackageName: ${{ variables.webAppPackageName }}
-      apiAppName:  ${{ variables.apiAppName }}
-      apiPackageName: ${{ variables.apiPackageName }}
+      azureSubscription: ${{ parameters.azureSubscription }}
+      webAppName:  ${{ parameters.webAppName }}
+      webAppPackageName: ${{ parameters.webAppPackageName }}
+      apiAppName:  ${{ parameters.apiAppName }}
+      apiPackageName: ${{ parameters.apiPackageName }}
