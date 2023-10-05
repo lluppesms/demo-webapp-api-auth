@@ -31,10 +31,6 @@ jobs:
 - job: CreateInfraJob
   displayName: Create Infra Job
   steps:
-
-- job: DeployApps
-  displayName: Deploy Apps
-  steps:
   - task: CmdLine@2
     inputs:
       script: |
