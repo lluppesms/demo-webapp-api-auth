@@ -22,8 +22,6 @@ parameters:
   default: ''
 - name: region
   default: ''
-- name: packageName
-  default: ''  
 
 # ----------------------------------------------------------------------------------------------------
 jobs:
