@@ -54,7 +54,7 @@ variables:
   
 stages:
 # ------------------------------------------------------------------------------------------------------------------------
-- template: pipes\build-webapi-pipe.yml
+- template: pipes/build-infra-deploy-pipe.yml
   parameters:
     buildConfiguration: 'Release'
     apiRootDirectory: ${{ variables.apiSourcePath }}

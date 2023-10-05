@@ -54,12 +54,12 @@ stages:
         workingDirectoryCode: ${{ parameters.workingDirectoryCode }}
         workingDirectoryInfra: ${{ parameters.workingDirectoryInfra }}
 
-  - template: templates\build-webapi-template.yml
+  - template: templates/build-webapi-template.yml
     parameters:
       buildConfiguration: 'Release'
       rootDirectory: ${{ variables.apiSourcePath }}
 
-  - template: templates\build-webapp-template.yml
+  - template: templates/build-webapp-template.yml
     parameters:
       buildConfiguration: 'Release'
       rootDirectory: ${{ variables.apiSourcePath }}
@@ -70,7 +70,7 @@ stages:
   dependsOn: BuildApp
   condition: succeeded('BuildApp')
   jobs:
-  - template: templates\infra-template.yml
+  - template: templates/infra-template.yml
     parameters:
       azureSubscription: ${{ variables.azureSubscription }}
       webAppName:  ${{ variables.webAppName }}
@@ -89,7 +89,7 @@ stages:
   dependsOn: CreateInfra
   condition: succeeded('CreateInfra')
   jobs:
-  - template: templates\deploy-template.yml
+  - template: templates/deploy-template.yml
     parameters:
       azureSubscription: ${{ variables.azureSubscription }}
       webAppName:  ${{ variables.webAppName }}
