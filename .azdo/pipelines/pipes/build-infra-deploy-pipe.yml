@@ -72,8 +72,8 @@ stages:
 # ------------------------------------------------------------------------------------------------------------------------
 - stage: CreateAzureInfra
   displayName: Create Azure Infra
-  dependsOn: BuildApp
-  condition: succeeded('BuildApp')
+  dependsOn: BuildApps
+  condition: succeeded('BuildApps')
   jobs:
   - template: templates/create-infra-template.yml
     parameters:
