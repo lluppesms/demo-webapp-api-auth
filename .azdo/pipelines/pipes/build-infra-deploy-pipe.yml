@@ -2,6 +2,12 @@
 # Pipe Template to build and deploy the entire application
 # ------------------------------------------------------------------------------------------------------------------------
 parameters:
+- name: buildConfiguration
+  default: 'Release'
+- name: apiRootDirectory
+  default: ''
+- name: webAppRootDirectory
+  default: ''
 - name: azureSubscription
   default: ''
 - name: webAppName

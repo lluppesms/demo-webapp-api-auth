@@ -56,7 +56,6 @@ stages:
 # ------------------------------------------------------------------------------------------------------------------------
 - template: pipes/build-infra-deploy-pipe.yml
   parameters:
-    buildConfiguration: 'Release'
     apiRootDirectory: ${{ variables.apiSourcePath }}
     webAppRootDirectory: ${{ variables.apiSourcePath }}
     azureSubscription: ${{ variables.azureSubscription }}
