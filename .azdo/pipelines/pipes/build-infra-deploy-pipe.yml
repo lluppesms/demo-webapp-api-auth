@@ -27,6 +27,16 @@ variables:
   default: ''
 - name: region
   default: ''
+- name: runDevSecOpsScan
+  default: 'false'
+- name: runPsRuleScan
+  default: 'false'
+- name: runGHAzDOScan
+  default: 'false'
+- name: workingDirectoryCode
+  default: 'src/myproject'
+- name: workingDirectoryInfra
+  default: '/infra/bicep'
 
 stages:
 # ------------------------------------------------------------------------------------------------------------------------
