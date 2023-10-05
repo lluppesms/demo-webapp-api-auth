@@ -19,6 +19,18 @@ jobs:
 - job: BuildWebAppJob
   displayName: Build WebApp Job
   steps:
+  - task: CmdLine@2
+    inputs:
+      script: |
+        echo "stageName=${{ parameters.stageName }}"
+        echo "environment=${{ parameters.environment }}"
+        echo "buildConfiguration=${{ parameters.buildConfiguration }}"
+        echo "rootDirectory=${{ parameters.rootDirectory }}"
+        echo "Directory of rootDirectory:"
+        dir "${{ parameters.rootDirectory }}" /s
+    displayName: 'Display Variables and Tree'
+    continueOnError: true
+
   - task: DotNetCoreCLI@2
     displayName: 'Build WebApp project'
     inputs:
@@ -37,7 +49,7 @@ jobs:
     displayName: 'Publish WebApp Artifacts'
     inputs:
       targetPath: '$(Build.ArtifactStagingDirectory)'
-      artifact: 'App'
+      artifact: WebApp
       publishLocation: 'pipeline'
 
   # - task: PublishPipelineArtifact@1

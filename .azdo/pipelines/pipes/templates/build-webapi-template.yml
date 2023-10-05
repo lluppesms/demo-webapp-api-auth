@@ -20,8 +20,17 @@ jobs:
 - job: BuildAPIJob
   displayName: Build API Job
   steps:
-
-
+  - task: CmdLine@2
+    inputs:
+      script: |
+        echo "stageName=${{ parameters.stageName }}"
+        echo "environment=${{ parameters.environment }}"
+        echo "buildConfiguration=${{ parameters.buildConfiguration }}"
+        echo "rootDirectory=${{ parameters.rootDirectory }}"
+        echo "Directory of rootDirectory:"
+        dir "${{ parameters.rootDirectory }}" /s
+    displayName: 'Display Variables and Tree'
+    continueOnError: true
 
   - task: DotNetCoreCLI@2
     displayName: 'Build API project'
@@ -41,7 +50,7 @@ jobs:
     displayName: 'Publish API Artifacts'
     inputs:
       targetPath: '$(Build.ArtifactStagingDirectory)'
-      artifact: 'App'
+      artifact: WebApi
       publishLocation: 'pipeline'
 
   # - task: PublishPipelineArtifact@1
