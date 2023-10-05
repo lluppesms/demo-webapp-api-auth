@@ -28,12 +28,12 @@ variables:
   # Lyle's variables
   # TODO: put the variables into a variable group so they can be updated easily
   azureSubscription: 'Lyle Luppes Sandbox'
-  webAppName: 'lll-webapp1-webapp'
-  apiAppName: 'lll-webapp1-api'
-  apiAppAPIMName: 'lll-webapp1-apim'
-  organizationName: 'LyleLuppes'
-  adminEmail: 'LyleLuppes@microsoft.com'
-  resourceGroupName: 'rg_webapp1_dev'
+  webAppName: 'lll-playwright-web'
+  apiAppName: 'lll-playwright-api'
+  apiAppAPIMName: 'lll-playwright-apim'
+  organizationName: 'lyleluppes'
+  adminEmail: 'lyleluppes@microsoft.com'
+  resourceGroupName: 'rg_playwright_testing'
 
   # Scott's variables
   # azureSubscription: 'Demo Account'

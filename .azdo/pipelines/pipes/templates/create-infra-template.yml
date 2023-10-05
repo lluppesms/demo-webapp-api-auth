@@ -22,6 +22,8 @@ parameters:
   default: ''
 - name: region
   default: ''
+- name: templateFolderName
+  default: 'infra/arm'
 
 # ----------------------------------------------------------------------------------------------------
 jobs:
@@ -30,6 +32,9 @@ jobs:
   environment: ${{ parameters.environment }}
 - job: CreateInfraJob
   displayName: Create Infra Job
+  variables:
+    - name: templateDirectory
+      value: '$(Pipeline.Workspace)/s/${{ parameters.templateFolderName }}'
   steps:
   - task: CmdLine@2
     inputs:
@@ -43,8 +48,8 @@ jobs:
         echo "adminEmail=${{ parameters.adminEmail }}"
         echo "resourceGroupName=${{ parameters.resourceGroupName }}"
         echo "region=${{ parameters.region }}"
-        echo "Directory of Pipeline.Workspace:"
-        dir  $(Pipeline.Workspace) /s
+        echo "Directory of $(templateDirectory):"
+        dir  $(templateDirectory) /s
     displayName: 'Display Variables and Tree'
     continueOnError: true
 
@@ -54,7 +59,7 @@ jobs:
       azureSubscription: ${{ parameters.azureSubscription }}
       resourceGroupName: ${{ parameters.resourceGroupName }}
       location: ${{ parameters.region }}
-      csmFile: '$(Pipeline.Workspace)/infra/arm/api-management-consumption.json'
+      csmFile: '$(templateDirectory)/api-management-consumption.json'
       overrideParameters: '-apimName ${{ parameters.apiAppAPIMName }}2 -organizationName ${{ parameters.organizationName }} -adminEmail ${{ parameters.adminEmail }}'
       deploymentOutputs: ResourceGroupDeploymentOutputs
 
@@ -64,7 +69,7 @@ jobs:
       azureSubscription: ${{ parameters.azureSubscription }}
       resourceGroupName: ${{ parameters.resourceGroupName }}
       location: ${{ parameters.region }}
-      csmFile: '$(Pipeline.Workspace)/infra/arm/api-management-core.json'
+      csmFile: '$(templateDirectory)/api-management-core.json'
       overrideParameters: '-serviceName ${{ parameters.apiAppAPIMName }}3 -publisherName ${{ parameters.organizationName }} -publisherEmail ${{ parameters.adminEmail }}'
       deploymentOutputs: ResourceGroupDeploymentOutputs
 
@@ -74,7 +79,7 @@ jobs:
       azureSubscription: ${{ parameters.azureSubscription }}
       resourceGroupName: ${{ parameters.resourceGroupName }}
       location: ${{ parameters.region }}
-      csmFile: '$(Pipeline.Workspace)/infra/arm/appservice-web-api.json'
+      csmFile: '$(templateDirectory)/appservice-web-api.json'
       overrideParameters: '-appName ${{ parameters.apiAppName }}'
       deploymentOutputs: ResourceGroupDeploymentOutputs
 
@@ -84,6 +89,6 @@ jobs:
       azureSubscription: ${{ parameters.azureSubscription }}
       resourceGroupName: ${{ parameters.resourceGroupName }}
       location: ${{ parameters.region }}
-      csmFile: '$(Pipeline.Workspace)/infra/arm/appservice-web-app.json'
+      csmFile: '$(templateDirectory)/appservice-web-app.json'
       overrideParameters: '-appName ${{ parameters.webAppName }}'
       deploymentOutputs: ResourceGroupDeploymentOutputs
