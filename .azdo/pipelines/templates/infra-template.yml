@@ -1,0 +1,79 @@
+parameters: 
+- name: stageName
+  default: 'CI'
+- name: environment
+  default: 'CI'
+- name: azureSubscription
+  default: ''
+- name: webAppName
+  default: ''
+- name: apiAppName
+  default: ''
+- name: apiAppApimName
+  default: ''
+- name: organizationName
+  default: ''
+- name: adminEmail
+  default: ''
+- name: resourceGroupName
+  default: ''
+- name: region
+  default: ''
+- name: packageName
+  default: ''  
+
+stages:
+  - stage: ${{ parameters.stageName }}
+    displayName: ${{ parameters.stageName }}
+
+    jobs:
+    - deployment: Infra
+      displayName: Infra
+      environment: ${{ parameters.environment }}
+      pool:
+        vmImage: 'windows-latest'
+  
+      strategy:
+        runOnce:
+          deploy:
+  
+            steps:
+            - task: AzureResourceGroupDeployment@2
+              displayName: '1. Create APIM Consumption'
+              inputs:
+                azureSubscription: ${{ parameters.azureSubscription }}
+                resourceGroupName: ${{ parameters.resourceGroupName }}
+                location: ${{ parameters.region }}
+                csmFile: '$(Pipeline.Workspace)/infra/arm/api-management-consumption.json'
+                overrideParameters: '-apimName ${{ parameters.apiAppApimName }}2 -organizationName ${{ parameters.organizationName }} -adminEmail ${{ parameters.adminEmail }}'
+                deploymentOutputs: ResourceGroupDeploymentOutputs
+
+            - task: AzureResourceGroupDeployment@2
+              displayName: '2. Create APIM Dev'
+              inputs:
+                azureSubscription: ${{ parameters.azureSubscription }}
+                resourceGroupName: ${{ parameters.resourceGroupName }}
+                location: ${{ parameters.region }}
+                csmFile: '$(Pipeline.Workspace)/infra/arm/api-management-core.json'
+                overrideParameters: '-serviceName ${{ parameters.apiAppApimName }}3 -publisherName ${{ parameters.organizationName }} -publisherEmail ${{ parameters.adminEmail }}'
+                deploymentOutputs: ResourceGroupDeploymentOutputs
+
+            - task: AzureResourceGroupDeployment@2
+              displayName: '3. Create WebAPI Service'
+              inputs:
+                azureSubscription: ${{ parameters.azureSubscription }}
+                resourceGroupName: ${{ parameters.resourceGroupName }}
+                location: ${{ parameters.region }}
+                csmFile: '$(Pipeline.Workspace)/infra/arm/appservice-web-api.json'
+                overrideParameters: '-appName ${{ parameters.apiAppName }}'
+                deploymentOutputs: ResourceGroupDeploymentOutputs
+
+            - task: AzureResourceGroupDeployment@2
+              displayName: '4. Create WebApp Service'
+              inputs:
+                azureSubscription: ${{ parameters.azureSubscription }}
+                resourceGroupName: ${{ parameters.resourceGroupName }}
+                location: ${{ parameters.region }}
+                csmFile: '$(Pipeline.Workspace)/infra/arm/appservice-web-app.json'
+                overrideParameters: '-appName ${{ parameters.webAppName }}'
+                deploymentOutputs: ResourceGroupDeploymentOutputs

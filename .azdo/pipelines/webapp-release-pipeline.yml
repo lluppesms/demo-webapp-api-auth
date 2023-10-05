@@ -1,0 +1,20 @@
+trigger: none
+
+resources:
+  pipelines:
+  - pipeline: build
+    source: 'demo-webapp-api-auth - UI - BUILD'
+  
+variables:
+  azureSubscription: 'Demo Account'
+
+stages:
+- template: azure-release-pipelines-stage-template.yml
+  parameters:
+    stageName: 'CI'
+    environment: 'CI'
+    azureSubscription: ${{ variables.azureSubscription }}
+    webAppName: 'rutzscodev-demo-webapp-api-auth-ui-ci'
+    resourceGroupName: 'rutzscodev-demo-webapp-api-auth-ui-ci'
+    region: 'East US'
+    packageName: 'Demo.WebUI.zip'

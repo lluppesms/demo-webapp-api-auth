@@ -1,0 +1,80 @@
+# ------------------------------------------------------------------------------------------------------------------------
+# Pipeline to build and deploy the entire application
+# ------------------------------------------------------------------------------------------------------------------------
+trigger: none
+ 
+# ------------------------------------------------------------------------------------------------------------------------
+variables:
+  # Lyle's variables
+  # TODO: put the variables into a variable group so they can be updated easily
+  azureSubscription: 'Lyle Luppes Sandbox'
+  webAppName: 'lll-webapp1-webapp'
+  apiAppName: 'lll-webapp1-api'
+  apiAppApimName: 'lll-webapp1-apim'
+  organizationName: 'LyleLuppes'
+  adminEmail: 'LyleLuppes@microsoft.com'
+  resourceGroupName: 'rg_webapp1_dev'
+
+  # Scott's variables
+  # azureSubscription: 'Demo Account'
+  # apiAppName: 'rutzscodev-demo-webapp-api-auth-api-ci'
+  # apiAppApimName: 'rutzsco-demo-webapp-api-auth-api-ci'
+  # organizationName: 'scrutz'
+  # adminEmail: 'scrutz@microsoft.com'
+  # resourceGroupName: 'rutzscodev-demo-webapp-api-auth-api-ci'
+
+  # Global variables
+  webAppSourcePath: '/services/Demo.WebUI'
+  webAppPackageName: 'Demo.WebUI.zip'
+  apiSourcePath: '/services/Demo.API'
+  apiPackageName: 'Demo.API.zip'
+  region: 'East US'
+
+
+stages:
+# ------------------------------------------------------------------------------------------------------------------------
+  - stage: BuildApp
+    displayName: Build App
+    jobs:
+    - template: templates\build-webapi-template.yml
+      parameters:
+        buildConfiguration: 'Release'
+        rootDirectory: ${{ variables.apiSourcePath }}
+
+    - template: templates\build-webapp-template.yml
+      parameters:
+        buildConfiguration: 'Release'
+        rootDirectory: ${{ variables.apiSourcePath }}
+
+# ------------------------------------------------------------------------------------------------------------------------
+  - stage: CreateInfra
+    displayName: Create Infra
+    dependsOn: BuildApp
+    condition: succeeded('BuildApp')
+    jobs:
+    - template: templates\infra-template.yml
+      parameters:
+        azureSubscription: ${{ variables.azureSubscription }}
+        webAppName:  ${{ variables.webAppName }}
+        apiAppName:  ${{ variables.apiAppName }}
+        apiAppApimName:  ${{ variables.apiAppApimName }}
+        organizationName:  ${{ variables.organizationName }}
+        adminEmail:  ${{ variables.adminEmail }}
+        resourceGroupName:  ${{ variables.resourceGroupName }}
+        region: ${{ variables.region }}
+        apiPackageName: ${{ variables.apiPackageName }}
+        webAppPackageName: ${{ variables.webAppPackageName }}
+
+# ------------------------------------------------------------------------------------------------------------------------
+  - stage: DeployApp
+    displayName: Deploy App
+    dependsOn: CreateInfra
+    condition: succeeded('CreateInfra')
+    jobs:
+    - template: templates\deploy-template.yml
+      parameters:
+        azureSubscription: ${{ variables.azureSubscription }}
+        webAppName:  ${{ variables.webAppName }}
+        webAppPackageName: ${{ variables.webAppPackageName }}
+        apiAppName:  ${{ variables.apiAppName }}
+        apiPackageName: ${{ variables.apiPackageName }}

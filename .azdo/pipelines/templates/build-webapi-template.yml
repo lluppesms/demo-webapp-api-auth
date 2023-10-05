@@ -1,0 +1,50 @@
+parameters: 
+- name: stageName
+  default: 'CI'
+- name: environment
+  default: 'CI'
+- name: buildConfiguration
+  default: 'Release'
+- name: rootDirectory
+  default: '/services/Demo.API'
+
+stages:
+  - stage: ${{ parameters.stageName }}
+    displayName: ${{ parameters.stageName }}
+
+    jobs:
+    - deployment: BuildAPI
+      displayName: Build API
+      environment: ${{ parameters.environment }}
+      pool:
+        vmImage: 'windows-latest'
+
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+            - task: DotNetCoreCLI@2
+              displayName: 'Build project'
+              inputs:
+                projects: '${{ parameters.rootDirectory }}/**/*.csproj'
+                arguments: '--output publish_output --configuration Release'
+
+            - task: DotNetCoreCLI@2
+              displayName: 'Publish project'
+              inputs:
+                command: publish
+                publishWebProjects: false
+                projects: '${{ parameters.rootDirectory }}/**/*.csproj'
+                arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)'
+                
+            - task: PublishPipelineArtifact@1
+              inputs:
+                targetPath: '$(Build.ArtifactStagingDirectory)'
+                artifact: 'App'
+                publishLocation: 'pipeline'
+
+            - task: PublishPipelineArtifact@1
+              inputs:
+                targetPath: ' ${{ parameters.rootDirectory }}/Infrastructure'
+                artifact: 'WebApi'
+                publishLocation: 'pipeline'
