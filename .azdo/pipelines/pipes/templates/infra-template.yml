@@ -12,7 +12,7 @@ parameters:
   default: ''
 - name: apiAppName
   default: ''
-- name: apiAppApimName
+- name: apiAppAPIMName
   default: ''
 - name: organizationName
   default: ''
@@ -40,7 +40,7 @@ jobs:
       resourceGroupName: ${{ parameters.resourceGroupName }}
       location: ${{ parameters.region }}
       csmFile: '$(Pipeline.Workspace)/infra/arm/api-management-consumption.json'
-      overrideParameters: '-apimName ${{ parameters.apiAppApimName }}2 -organizationName ${{ parameters.organizationName }} -adminEmail ${{ parameters.adminEmail }}'
+      overrideParameters: '-apimName ${{ parameters.apiAppAPIMName }}2 -organizationName ${{ parameters.organizationName }} -adminEmail ${{ parameters.adminEmail }}'
       deploymentOutputs: ResourceGroupDeploymentOutputs
 
   - task: AzureResourceGroupDeployment@2
@@ -50,7 +50,7 @@ jobs:
       resourceGroupName: ${{ parameters.resourceGroupName }}
       location: ${{ parameters.region }}
       csmFile: '$(Pipeline.Workspace)/infra/arm/api-management-core.json'
-      overrideParameters: '-serviceName ${{ parameters.apiAppApimName }}3 -publisherName ${{ parameters.organizationName }} -publisherEmail ${{ parameters.adminEmail }}'
+      overrideParameters: '-serviceName ${{ parameters.apiAppAPIMName }}3 -publisherName ${{ parameters.organizationName }} -publisherEmail ${{ parameters.adminEmail }}'
       deploymentOutputs: ResourceGroupDeploymentOutputs
 
   - task: AzureResourceGroupDeployment@2

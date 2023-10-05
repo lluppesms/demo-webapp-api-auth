@@ -14,7 +14,7 @@ parameters:
   default: ''
 - name: apiAppName
   default: ''
-- name: apiAppApimName
+- name: apiAppAPIMName
   default: ''
 - name: organizationName
   default: ''
@@ -22,15 +22,15 @@ parameters:
   default: ''
 - name: resourceGroupName
   default: ''
-- name: webAppSourcePath
-  default: ''
-- name: webAppPackageName
-  default: ''
-- name: apiSourcePath
+- name: region
   default: ''
 - name: apiPackageName
   default: ''
-- name: region
+- name: apiSourcePath
+  default: ''
+- name: webAppPackageName
+  default: ''
+- name: webAppSourcePath
   default: ''
 - name: runDevSecOpsScan
   default: 'false'
@@ -80,7 +80,7 @@ stages:
       azureSubscription: ${{ parameters.azureSubscription }}
       webAppName:  ${{ parameters.webAppName }}
       apiAppName:  ${{ parameters.apiAppName }}
-      apiAppApimName:  ${{ parameters.apiAppApimName }}
+      apiAppAPIMName:  ${{ parameters.apiAppAPIMName }}
       organizationName:  ${{ parameters.organizationName }}
       adminEmail:  ${{ parameters.adminEmail }}
       resourceGroupName:  ${{ parameters.resourceGroupName }}

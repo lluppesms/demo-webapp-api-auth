@@ -30,7 +30,7 @@ variables:
   azureSubscription: 'Lyle Luppes Sandbox'
   webAppName: 'lll-webapp1-webapp'
   apiAppName: 'lll-webapp1-api'
-  apiAppApimName: 'lll-webapp1-apim'
+  apiAppAPIMName: 'lll-webapp1-apim'
   organizationName: 'LyleLuppes'
   adminEmail: 'LyleLuppes@microsoft.com'
   resourceGroupName: 'rg_webapp1_dev'
@@ -38,7 +38,7 @@ variables:
   # Scott's variables
   # azureSubscription: 'Demo Account'
   # apiAppName: 'rutzscodev-demo-webapp-api-auth-api-ci'
-  # apiAppApimName: 'rutzsco-demo-webapp-api-auth-api-ci'
+  # apiAppAPIMName: 'rutzsco-demo-webapp-api-auth-api-ci'
   # organizationName: 'scrutz'
   # adminEmail: 'scrutz@microsoft.com'
   # resourceGroupName: 'rutzscodev-demo-webapp-api-auth-api-ci'
@@ -61,13 +61,15 @@ stages:
     azureSubscription: ${{ variables.azureSubscription }}
     webAppName:  ${{ variables.webAppName }}
     apiAppName:  ${{ variables.apiAppName }}
-    apiAppApimName:  ${{ variables.apiAppApimName }}
+    apiAppAPIMName:  ${{ variables.apiAppAPIMName }}
     organizationName:  ${{ variables.organizationName }}
     adminEmail:  ${{ variables.adminEmail }}
     resourceGroupName:  ${{ variables.resourceGroupName }}
     region: ${{ variables.region }}
     apiPackageName: ${{ variables.apiPackageName }}
+    apiSourcePath: ${{ variables.apiSourcePath }}
     webAppPackageName: ${{ variables.webAppPackageName }}
+    webAppSourcePath: ${{ variables.webAppSourcePath }}
     runDevSecOpsScan: ${{ parameters.runDevSecOpsScan }}
     runPsRuleScan: ${{ parameters.runPsRuleScan }}
     runGHAzDOScan: ${{ parameters.runGHAzDOScan }}
