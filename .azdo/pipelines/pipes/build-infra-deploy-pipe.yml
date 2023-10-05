@@ -45,8 +45,8 @@ parameters:
 
 stages:
 # ------------------------------------------------------------------------------------------------------------------------
-- stage: BuildApp
-  displayName: Build App
+- stage: BuildApps
+  displayName: Build Apps
   jobs:
 
   - ${{ if or(or(eq(lower(parameters.runDevSecOpsScan), 'true'), eq(lower(parameters.runPsRuleScan), 'true')), eq(lower(parameters.runGHAzDOScan), 'true')) }}:
@@ -70,12 +70,12 @@ stages:
       rootDirectory: ${{ parameters.apiSourcePath }}
 
 # ------------------------------------------------------------------------------------------------------------------------
-- stage: CreateInfra
-  displayName: Create Infra
+- stage: CreateAzureInfra
+  displayName: Create Azure Infra
   dependsOn: BuildApp
   condition: succeeded('BuildApp')
   jobs:
-  - template: templates/infra-template.yml
+  - template: templates/create-infra-template.yml
     parameters:
       azureSubscription: ${{ parameters.azureSubscription }}
       webAppName:  ${{ parameters.webAppName }}
