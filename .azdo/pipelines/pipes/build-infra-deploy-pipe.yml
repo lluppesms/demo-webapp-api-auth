@@ -2,7 +2,6 @@
 # Pipe Template to build and deploy the entire application
 # ------------------------------------------------------------------------------------------------------------------------
 parameters:
-variables:
 - name: azureSubscription
   default: ''
 - name: webAppName
