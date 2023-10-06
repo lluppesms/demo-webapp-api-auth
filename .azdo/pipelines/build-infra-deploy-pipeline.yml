@@ -42,6 +42,7 @@ variables:
   organizationName: 'lyleluppes'
   adminEmail: 'lyleluppes@microsoft.com'
   resourceGroupName: 'rg_playwright_testing'
+  region: 'East US'
 
   # Scott's variables
   # azureSubscription: 'Demo Account'
@@ -50,17 +51,17 @@ variables:
   # organizationName: 'scrutz'
   # adminEmail: 'scrutz@microsoft.com'
   # resourceGroupName: 'rutzscodev-demo-webapp-api-auth-api-ci'
+  # region: 'East US'
 
-  # Global variables
+  # Project Static variables
   webSourcePath: 'services/Demo.WebUI'
-  webPackageName: 'Demo.WebUI.zip'
-  webArtifactName: 'WebApp'
   apiSourcePath: 'services/Demo.API'
+  webPackageName: 'Demo.WebUI.zip'
   apiPackageName: 'Demo.API.zip'
+  webArtifactName: 'WebApp'
   apiArtifactName: 'WebApi'
-  region: 'East US'
-  workingDirectoryCode: 'services/Demo.WebUI'
-  workingDirectoryInfra: 'infra/arm/'
+  workingDirectoryCode: 'services/'
+  workingDirectoryInfra: 'infra/'
   
 stages:
 # ------------------------------------------------------------------------------------------------------------------------
