@@ -51,10 +51,3 @@ jobs:
       targetPath: '$(Build.ArtifactStagingDirectory)'
       artifact: WebApp
       publishLocation: 'pipeline'
-
-  # - task: PublishPipelineArtifact@1
-  #   displayName: 'Publish API Artifacts'
-  #   inputs:
-  #     targetPath: ' ${{ parameters.rootDirectory }}/Infrastructure'
-  #     artifact: 'WebApp'
-  #     publishLocation: 'pipeline'

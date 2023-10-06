@@ -26,6 +26,16 @@ jobs:
 - job: DeployAppsJob
   displayName: Deploy Apps Job
   steps:
+  - task: DownloadPipelineArtifact@2
+    displayName: 'Download WebApi Artifact'
+    inputs:
+      artifact: WebApi
+
+  - task: DownloadPipelineArtifact@2
+    displayName: 'Download WebApp Artifact'
+    inputs:
+      artifact: WebApp
+
   - task: CmdLine@2
     inputs:
       script: |
@@ -46,7 +56,7 @@ jobs:
     inputs:
       azureSubscription: ${{ parameters.azureSubscription }}
       WebAppName: ${{ parameters.apiAppName }}
-      package: '$(Pipeline.Workspace)/build/WebApi/${{ parameters.apiPackageName }}'
+      package: '$(Pipeline.Workspace)/s/build/WebApi/${{ parameters.apiPackageName }}'
       AppSettings: ''
 
   - task: AzureRmWebAppDeployment@4
@@ -54,5 +64,5 @@ jobs:
     inputs:
       azureSubscription: ${{ parameters.azureSubscription }}
       WebAppName: ${{ parameters.webAppName }}
-      package: '$(Pipeline.Workspace)/build/WebApp/${{ parameters.webAppPackageName }}'
+      package: '$(Pipeline.Workspace)/s/build/WebApp/${{ parameters.webAppPackageName }}'
       AppSettings: ''
