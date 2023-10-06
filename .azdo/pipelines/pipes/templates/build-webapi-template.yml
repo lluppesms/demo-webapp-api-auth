@@ -2,6 +2,8 @@
 # Template to build the WebAPI and create artifacts
 # ----------------------------------------------------------------------------------------------------
 parameters: 
+- name: buildDeployApps
+  default: true
 - name: stageName
   default: 'CI'
 - name: environment
@@ -32,23 +34,24 @@ jobs:
     displayName: 'Display Variables and Tree'
     continueOnError: true
 
-  - task: DotNetCoreCLI@2
-    displayName: 'Build API project'
-    inputs:
-      projects: '${{ parameters.rootDirectory }}/*.csproj'
-      arguments: '--output publish_output --configuration Release'
+  - ${{ if eq(lower(parameters.buildDeployApps), 'true') }}:
+    - task: DotNetCoreCLI@2
+      displayName: 'Build API project'
+      inputs:
+        projects: '${{ parameters.rootDirectory }}/*.csproj'
+        arguments: '--output publish_output --configuration Release'
 
-  - task: DotNetCoreCLI@2
-    displayName: 'Publish API project'
-    inputs:
-      command: publish
-      publishWebProjects: false
-      projects: '${{ parameters.rootDirectory }}/*.csproj'
-      arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)'
-      
-  - task: PublishPipelineArtifact@1
-    displayName: 'Publish API Artifacts'
-    inputs:
-      targetPath: '$(Build.ArtifactStagingDirectory)'
-      artifact: WebApi
-      publishLocation: 'pipeline'
+    - task: DotNetCoreCLI@2
+      displayName: 'Publish API project'
+      inputs:
+        command: publish
+        publishWebProjects: false
+        projects: '${{ parameters.rootDirectory }}/*.csproj'
+        arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)'
+        
+    - task: PublishPipelineArtifact@1
+      displayName: 'Publish API Artifacts'
+      inputs:
+        targetPath: '$(Build.ArtifactStagingDirectory)'
+        artifact: WebApi
+        publishLocation: 'pipeline'

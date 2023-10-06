@@ -63,16 +63,17 @@ stages:
         workingDirectoryCode: ${{ parameters.workingDirectoryCode }}
         workingDirectoryInfra: ${{ parameters.workingDirectoryInfra }}
 
-  - ${{ if eq(lower(parameters.buildDeployApps), 'true') }}:
-    - template: templates/build-webapi-template.yml
-      parameters:
-        buildConfiguration: 'Release'
-        rootDirectory: ${{ parameters.apiSourcePath }}
+  - template: templates/build-webapi-template.yml
+    parameters:
+      buildDeployApps: ${{ parameters.buildDeployApps }}
+      buildConfiguration: 'Release'
+      rootDirectory: ${{ parameters.apiSourcePath }}
 
-    - template: templates/build-webapp-template.yml
-      parameters:
-        buildConfiguration: 'Release'
-        rootDirectory: ${{ parameters.apiSourcePath }}
+  - template: templates/build-webapp-template.yml
+    parameters:
+      buildDeployApps: ${{ parameters.buildDeployApps }}
+      buildConfiguration: 'Release'
+      rootDirectory: ${{ parameters.apiSourcePath }}
 
 # ------------------------------------------------------------------------------------------------------------------------
 - stage: CreateAzureInfra
@@ -80,29 +81,29 @@ stages:
   dependsOn: BuildApps
   condition: succeeded('BuildApps')
   jobs:
-  - ${{ if eq(lower(parameters.createInfra), 'true') }}:
-    - template: templates/create-infra-template.yml
-      parameters:
-        azureSubscription: ${{ parameters.azureSubscription }}
-        webAppName:  ${{ parameters.webAppName }}
-        apiAppName:  ${{ parameters.apiAppName }}
-        apiAppAPIMName:  ${{ parameters.apiAppAPIMName }}
-        organizationName:  ${{ parameters.organizationName }}
-        adminEmail:  ${{ parameters.adminEmail }}
-        resourceGroupName:  ${{ parameters.resourceGroupName }}
-        region: ${{ parameters.region }}
+  - template: templates/create-infra-template.yml
+    parameters:
+      createInfra: ${{ parameters.createInfra }}
+      azureSubscription: ${{ parameters.azureSubscription }}
+      webAppName:  ${{ parameters.webAppName }}
+      apiAppName:  ${{ parameters.apiAppName }}
+      apiAppAPIMName:  ${{ parameters.apiAppAPIMName }}
+      organizationName:  ${{ parameters.organizationName }}
+      adminEmail:  ${{ parameters.adminEmail }}
+      resourceGroupName:  ${{ parameters.resourceGroupName }}
+      region: ${{ parameters.region }}
 
 # ------------------------------------------------------------------------------------------------------------------------
-- ${{ if eq(lower(parameters.buildDeployApps), 'true') }}:
-  - stage: DeployApp
-    displayName: Deploy App
-    dependsOn: CreateAzureInfra
-    condition: succeeded('CreateAzureInfra')
-    jobs:
-    - template: templates/deploy-apps-template.yml
-      parameters:
-        azureSubscription: ${{ parameters.azureSubscription }}
-        webAppName:  ${{ parameters.webAppName }}
-        webAppPackageName: ${{ parameters.webAppPackageName }}
-        apiAppName:  ${{ parameters.apiAppName }}
-        apiPackageName: ${{ parameters.apiPackageName }}
+- stage: DeployApp
+  displayName: Deploy App
+  dependsOn: CreateAzureInfra
+  condition: succeeded('CreateAzureInfra')
+  jobs:
+  - template: templates/deploy-apps-template.yml
+    parameters:
+      buildDeployApps: ${{ parameters.buildDeployApps }}
+      azureSubscription: ${{ parameters.azureSubscription }}
+      webAppName:  ${{ parameters.webAppName }}
+      webAppPackageName: ${{ parameters.webAppPackageName }}
+      apiAppName:  ${{ parameters.apiAppName }}
+      apiPackageName: ${{ parameters.apiPackageName }}

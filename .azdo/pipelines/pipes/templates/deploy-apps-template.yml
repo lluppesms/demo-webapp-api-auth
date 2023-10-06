@@ -2,6 +2,8 @@
 # Template to deploy the WebAPI and WebApp to Azure
 # ----------------------------------------------------------------------------------------------------
 parameters: 
+- name: buildDeployApps
+  default: true
 - name: stageName
   default: 'CI'
 - name: environment
@@ -26,15 +28,16 @@ jobs:
 - job: DeployAppsJob
   displayName: Deploy Apps Job
   steps:
-  - task: DownloadPipelineArtifact@2
-    displayName: 'Download WebApi Artifact'
-    inputs:
-      artifact: WebApi
+  - ${{ if eq(lower(parameters.buildDeployApps), 'true') }}:
+    - task: DownloadPipelineArtifact@2
+      displayName: 'Download WebApi Artifact'
+      inputs:
+        artifact: WebApi
 
-  - task: DownloadPipelineArtifact@2
-    displayName: 'Download WebApp Artifact'
-    inputs:
-      artifact: WebApp
+    - task: DownloadPipelineArtifact@2
+      displayName: 'Download WebApp Artifact'
+      inputs:
+        artifact: WebApp
 
   - task: CmdLine@2
     inputs:
@@ -51,18 +54,19 @@ jobs:
     displayName: 'Display Variables and Tree'
     continueOnError: true
 
-  - task: AzureRmWebAppDeployment@4
-    displayName: '1. Deploy API'
-    inputs:
-      azureSubscription: ${{ parameters.azureSubscription }}
-      WebAppName: ${{ parameters.apiAppName }}
-      package: '$(Pipeline.Workspace)/s/build/WebApi/${{ parameters.apiPackageName }}'
-      AppSettings: ''
+  - ${{ if eq(lower(parameters.buildDeployApps), 'true') }}:
+    - task: AzureRmWebAppDeployment@4
+      displayName: '1. Deploy API'
+      inputs:
+        azureSubscription: ${{ parameters.azureSubscription }}
+        WebAppName: ${{ parameters.apiAppName }}
+        package: '$(Pipeline.Workspace)/s/build/WebApi/${{ parameters.apiPackageName }}'
+        AppSettings: ''
 
-  - task: AzureRmWebAppDeployment@4
-    displayName: '2. Deploy WebApp'
-    inputs:
-      azureSubscription: ${{ parameters.azureSubscription }}
-      WebAppName: ${{ parameters.webAppName }}
-      package: '$(Pipeline.Workspace)/s/build/WebApp/${{ parameters.webAppPackageName }}'
-      AppSettings: ''
+    - task: AzureRmWebAppDeployment@4
+      displayName: '2. Deploy WebApp'
+      inputs:
+        azureSubscription: ${{ parameters.azureSubscription }}
+        WebAppName: ${{ parameters.webAppName }}
+        package: '$(Pipeline.Workspace)/s/build/WebApp/${{ parameters.webAppPackageName }}'
+        AppSettings: ''
