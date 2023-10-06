@@ -52,8 +52,8 @@ variables:
   # resourceGroupName: 'rutzscodev-demo-webapp-api-auth-api-ci'
 
   # Global variables
-  webAppSourcePath: 'services/Demo.WebUI'
-  webAppPackageName: 'Demo.WebUI.zip'
+  webSourcePath: 'services/Demo.WebUI'
+  webPackageName: 'Demo.WebUI.zip'
   webArtifactName: 'WebApp'
   apiSourcePath: 'services/Demo.API'
   apiPackageName: 'Demo.API.zip'
@@ -71,21 +71,28 @@ stages:
     runDevSecOpsScan: ${{ parameters.runDevSecOpsScan }}
     runGHAzDOScan: ${{ parameters.runGHAzDOScan }}
 
-    apiRootDirectory: ${{ variables.apiSourcePath }}
-    webAppRootDirectory: ${{ variables.apiSourcePath }}
-    azureSubscription: ${{ variables.azureSubscription }}
-    webAppName:  ${{ variables.webAppName }}
-    apiAppName:  ${{ variables.apiAppName }}
-    webArtifactName:  ${{ variables.webArtifactName }}
-    apiArtifactName:  ${{ variables.apiArtifactName }}
-    apiAppAPIMName:  ${{ variables.apiAppAPIMName }}
     organizationName:  ${{ variables.organizationName }}
     adminEmail:  ${{ variables.adminEmail }}
     resourceGroupName:  ${{ variables.resourceGroupName }}
     region: ${{ variables.region }}
+    azureSubscription: ${{ variables.azureSubscription }}
+
+    apiAppAPIMName:  ${{ variables.apiAppAPIMName }}
+
+    webRootDirectory: ${{ variables.apiSourcePath }}
+    apiRootDirectory: ${{ variables.apiSourcePath }}
+
+    webAppName:  ${{ variables.webAppName }}
+    apiAppName:  ${{ variables.apiAppName }}
+
+    webPackageName: ${{ variables.webPackageName }}
     apiPackageName: ${{ variables.apiPackageName }}
+
+    webSourcePath: ${{ variables.webSourcePath }}
     apiSourcePath: ${{ variables.apiSourcePath }}
-    webAppPackageName: ${{ variables.webAppPackageName }}
-    webAppSourcePath: ${{ variables.webAppSourcePath }}
+
+    webArtifactName:  ${{ variables.webArtifactName }}
+    apiArtifactName:  ${{ variables.apiArtifactName }}
+
     workingDirectoryCode: ${{ variables.workingDirectoryCode }}
     workingDirectoryInfra: ${{ variables.workingDirectoryInfra }}

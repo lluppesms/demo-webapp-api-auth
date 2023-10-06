@@ -8,17 +8,7 @@ parameters:
   default: true
 - name: buildConfiguration
   default: 'Release'
-- name: apiRootDirectory
-  default: ''
-- name: webAppRootDirectory
-  default: ''
 - name: azureSubscription
-  default: ''
-- name: webAppName
-  default: ''
-- name: apiAppName
-  default: ''
-- name: apiAppAPIMName
   default: ''
 - name: organizationName
   default: ''
@@ -28,18 +18,35 @@ parameters:
   default: ''
 - name: region
   default: ''
+
+- name: apiAppAPIMName
+  default: ''
+
+- name: webRootDirectory
+  default: ''
+- name: apiRootDirectory
+  default: ''
+
+- name: webAppName
+  default: ''
+- name: apiAppName
+  default: ''
+
+- name: webPackageName
+  default: ''
 - name: apiPackageName
+  default: ''
+
+- name: webSourcePath
   default: ''
 - name: apiSourcePath
   default: ''
-- name: apiArtifactName
-  default: ''
-- name: webAppPackageName
-  default: ''
-- name: webAppSourcePath
-  default: ''
+
 - name: webArtifactName
   default: ''
+- name: apiArtifactName
+  default: ''
+
 - name: runDevSecOpsScan
   default: 'false'
 - name: runPsRuleScan
@@ -78,7 +85,7 @@ stages:
     parameters:
       buildDeployApps: ${{ parameters.buildDeployApps }}
       buildConfiguration: 'Release'
-      rootDirectory: ${{ parameters.apiSourcePath }}
+      rootDirectory: ${{ parameters.webSourcePath }}
       artifactName: ${{ parameters.webArtifactName }}
 
 # ------------------------------------------------------------------------------------------------------------------------
@@ -110,8 +117,8 @@ stages:
       buildDeployApps: ${{ parameters.buildDeployApps }}
       azureSubscription: ${{ parameters.azureSubscription }}
       webAppName:  ${{ parameters.webAppName }}
-      webAppPackageName: ${{ parameters.webAppPackageName }}
       apiAppName:  ${{ parameters.apiAppName }}
+      webPackageName: ${{ parameters.webPackageName }}
       apiPackageName: ${{ parameters.apiPackageName }}
-      apiArtifactName: ${{ parameters.apiArtifactName }} 
       webArtifactName: ${{ parameters.webArtifactName }}
+      apiArtifactName: ${{ parameters.apiArtifactName }} 

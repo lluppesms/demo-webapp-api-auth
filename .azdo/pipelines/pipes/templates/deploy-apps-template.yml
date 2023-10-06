@@ -12,7 +12,7 @@ parameters:
   default: ''
 - name: webAppName
   default: ''
-- name: webAppPackageName
+- name: webPackageName
   default: ''  
 - name: apiAppName
   default: ''
@@ -52,7 +52,7 @@ jobs:
         echo "environment=${{ parameters.environment }}"
         echo "azureSubscription=${{ parameters.azureSubscription }}"
         echo "webAppName=${{ parameters.webAppName }}"
-        echo "webAppPackageName=${{ parameters.webAppPackageName }}"
+        echo "webPackageName=${{ parameters.webPackageName }}"
         echo "apiAppName=${{ parameters.apiAppName }}"
         echo "apiPackageName=${{ parameters.apiPackageName }}"
         echo "apiArtifactName=${{ parameters.apiArtifactName }}"

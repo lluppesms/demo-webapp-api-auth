@@ -31,6 +31,7 @@ jobs:
         echo "environment=${{ parameters.environment }}"
         echo "buildConfiguration=${{ parameters.buildConfiguration }}"
         echo "rootDirectory=${{ parameters.rootDirectory }}"
+        echo "artifactName=${{ parameters.artifactName }}"
         echo "Directory of rootDirectory:"
         dir "${{ parameters.rootDirectory }}" /s
     displayName: 'Display Variables and Tree'
