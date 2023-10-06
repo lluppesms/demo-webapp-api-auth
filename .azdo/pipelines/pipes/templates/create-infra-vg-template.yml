@@ -51,9 +51,9 @@ jobs:
   variables:
     - group: ${{ parameters.variableGroupName }}
     - name: environmentNameUpper
-      value: ${{ upper(parameters.environmentName) }}
+      value: ${{ upper(parameters.environment) }}
     - name: environmentNameLower
-      value: ${{ lower(parameters.environmentName) }}
+      value: ${{ lower(parameters.environment) }}
     - name: templateDirectory
       value: '$(Pipeline.Workspace)\s\${{ parameters.templateFolderName }}'
     - name: bicepDirectory
