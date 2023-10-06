@@ -68,8 +68,10 @@ jobs:
         echo "adDomain=${{ parameters.adDomain }}"
         echo "adTenantId=${{ parameters.adTenantId }}"
         echo "adClientId=${{ parameters.adClientId }}"
-        echo "Directory of $(templateDirectory):"
+        echo "Directory Listing for: $(templateDirectory)"
         dir  $(templateDirectory) /s
+        echo "Directory Listing for: $(bicepDirectory)"
+        dir  $(bicepDirectory) /s
     displayName: 'Display Variables and Tree'
     continueOnError: true
 

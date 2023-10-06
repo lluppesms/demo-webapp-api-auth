@@ -33,22 +33,8 @@ parameters:
 
 # ------------------------------------------------------------------------------------------------------------------------
 variables:
-  # Lyle's variables
-  - group: 'Playwright'
-    # Group contains these variables:
-    # azureSubscription: 'yourSubscriptionName'
-    # webAppName: 'xxx-playwright-web'
-    # apiAppName: 'xxx-playwright-api'
-    # apiAppAPIMName: 'xxx-playwright-apim'
-    # organizationName: 'yourOrgName'
-    # adminEmail: 'you@yourDomain.com'
-    # resourceGroupName: 'rg_playwright_testing'
-    # region: 'East US'
-    # adDomain: 'yourdomain.onmicrosoft.com'
-    # adTenantId: 'someGuid'
-    # adClientId: 'someGuid'
-    # webAPIScope='api://xxxxxGUIDxxxxx/.default'
-    # webAPIUrl='https://xxxxApimNamexxxx.azure-api.net/WeatherForecast'
+  # See .azdo/pipelines/readme.me for details how to create this variable group and what it contains
+  #- group: 'Playwright'
 
   # Project Static variables
   - name: webSourcePath 
@@ -70,6 +56,10 @@ variables:
   
 stages:
 # ------------------------------------------------------------------------------------------------------------------------
+- variables:
+  # See .azdo/pipelines/readme.me for details how to create this variable group and what it contains
+  - group: 'Playwright'
+  
 - template: pipes/build-infra-deploy-pipe.yml
   parameters:
     createInfra: ${{ parameters.createInfra }}
