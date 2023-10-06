@@ -18,6 +18,10 @@ parameters:
   default: ''
 - name: apiPackageName
   default: ''  
+- name: apiArtifactName
+  default: ''  
+- name: webArtifactName
+  default: ''  
 
 # ----------------------------------------------------------------------------------------------------
 jobs:
@@ -32,12 +36,14 @@ jobs:
     - task: DownloadPipelineArtifact@2
       displayName: 'Download WebApi Artifact'
       inputs:
-        artifact: WebApi
+        artifact: ${{ parameters.apiArtifactName }}
+        targetPath: '$(Pipeline.Workspace)\WebApi' 
 
     - task: DownloadPipelineArtifact@2
       displayName: 'Download WebApp Artifact'
       inputs:
-        artifact: WebApp
+        artifact: ${{ parameters.webArtifactName }}
+        targetPath: '$(Pipeline.Workspace)\WebApp' 
 
   - task: CmdLine@2
     inputs:
@@ -49,6 +55,8 @@ jobs:
         echo "webAppPackageName=${{ parameters.webAppPackageName }}"
         echo "apiAppName=${{ parameters.apiAppName }}"
         echo "apiPackageName=${{ parameters.apiPackageName }}"
+        echo "apiArtifactName=${{ parameters.apiArtifactName }}"
+        echo "webArtifactName=${{ parameters.webArtifactName }}"
         echo "Directory of Pipeline.Workspace:"
         dir  $(Pipeline.Workspace) /s
     displayName: 'Display Variables and Tree'
@@ -60,7 +68,7 @@ jobs:
       inputs:
         azureSubscription: ${{ parameters.azureSubscription }}
         WebAppName: ${{ parameters.apiAppName }}
-        package: '$(Pipeline.Workspace)/s/build/WebApi/${{ parameters.apiPackageName }}'
+        package: '$(Pipeline.Workspace)\WebApi\*.zip'
         AppSettings: ''
 
     - task: AzureRmWebAppDeployment@4
@@ -68,5 +76,5 @@ jobs:
       inputs:
         azureSubscription: ${{ parameters.azureSubscription }}
         WebAppName: ${{ parameters.webAppName }}
-        package: '$(Pipeline.Workspace)/s/build/WebApp/${{ parameters.webAppPackageName }}'
+        package: '$(Pipeline.Workspace)\WebApp\*.zip'
         AppSettings: ''

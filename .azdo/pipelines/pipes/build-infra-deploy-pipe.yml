@@ -32,9 +32,13 @@ parameters:
   default: ''
 - name: apiSourcePath
   default: ''
+- name: apiArtifactName
+  default: ''
 - name: webAppPackageName
   default: ''
 - name: webAppSourcePath
+  default: ''
+- name: webArtifactName
   default: ''
 - name: runDevSecOpsScan
   default: 'false'
@@ -68,12 +72,14 @@ stages:
       buildDeployApps: ${{ parameters.buildDeployApps }}
       buildConfiguration: 'Release'
       rootDirectory: ${{ parameters.apiSourcePath }}
+      artifactName: ${{ parameters.apiArtifactName }} 
 
   - template: templates/build-webapp-template.yml
     parameters:
       buildDeployApps: ${{ parameters.buildDeployApps }}
       buildConfiguration: 'Release'
       rootDirectory: ${{ parameters.apiSourcePath }}
+      artifactName: ${{ parameters.webArtifactName }}
 
 # ------------------------------------------------------------------------------------------------------------------------
 - stage: CreateAzureInfra
@@ -107,3 +113,5 @@ stages:
       webAppPackageName: ${{ parameters.webAppPackageName }}
       apiAppName:  ${{ parameters.apiAppName }}
       apiPackageName: ${{ parameters.apiPackageName }}
+      apiArtifactName: ${{ parameters.apiArtifactName }} 
+      webArtifactName: ${{ parameters.webArtifactName }}

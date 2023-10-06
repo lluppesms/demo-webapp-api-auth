@@ -54,8 +54,10 @@ variables:
   # Global variables
   webAppSourcePath: 'services/Demo.WebUI'
   webAppPackageName: 'Demo.WebUI.zip'
+  webArtifactName: 'WebApp'
   apiSourcePath: 'services/Demo.API'
   apiPackageName: 'Demo.API.zip'
+  apiArtifactName: 'WebApi'
   region: 'East US'
   workingDirectoryCode: 'services/Demo.WebUI'
   workingDirectoryInfra: 'infra/arm/'
@@ -74,6 +76,8 @@ stages:
     azureSubscription: ${{ variables.azureSubscription }}
     webAppName:  ${{ variables.webAppName }}
     apiAppName:  ${{ variables.apiAppName }}
+    webArtifactName:  ${{ variables.webArtifactName }}
+    apiArtifactName:  ${{ variables.apiArtifactName }}
     apiAppAPIMName:  ${{ variables.apiAppAPIMName }}
     organizationName:  ${{ variables.organizationName }}
     adminEmail:  ${{ variables.adminEmail }}

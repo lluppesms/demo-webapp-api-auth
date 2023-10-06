@@ -12,6 +12,8 @@ parameters:
   default: 'Release'
 - name: rootDirectory
   default: ''
+- name: artifactName
+  default: 'WebApi'
 
 # ----------------------------------------------------------------------------------------------------
 jobs:
@@ -53,5 +55,5 @@ jobs:
       displayName: 'Publish API Artifacts'
       inputs:
         targetPath: '$(Build.ArtifactStagingDirectory)'
-        artifact: WebApi
+        artifact: ${{ parameters.artifactName }}
         publishLocation: 'pipeline'
