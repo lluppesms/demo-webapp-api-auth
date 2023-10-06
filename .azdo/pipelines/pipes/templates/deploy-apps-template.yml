@@ -49,8 +49,8 @@ jobs:
         echo "apiPackageName=${{ parameters.apiPackageName }}"
         echo "apiArtifactName=${{ parameters.apiArtifactName }}"
         echo "webArtifactName=${{ parameters.webArtifactName }}"
-        echo "apiAppName=${{ variables.apiAppName }}"
-        echo "webAppName=${{ variables.webAppName }}"
+        echo "apiAppName=$(apiAppName)"
+        echo "webAppName=$(webAppName)"
         echo "azureSubscription=$(azureSubscription)"
         echo "Directory of Pipeline.Workspace:"
         dir  $(Pipeline.Workspace) /s
@@ -62,7 +62,7 @@ jobs:
       displayName: '1. Deploy API'
       inputs:
         azureSubscription: $(azureSubscription)
-        WebAppName: ${{ variables.apiAppName }}
+        WebAppName: $(apiAppName)
         package: '$(Pipeline.Workspace)\WebApi\*.zip'
         AppSettings: ''
 
@@ -70,6 +70,6 @@ jobs:
       displayName: '2. Deploy WebApp'
       inputs:
         azureSubscription: $(azureSubscription)
-        WebAppName: ${{ variables.webAppName }}
+        WebAppName: $(webAppName)
         package: '$(Pipeline.Workspace)\WebApp\*.zip'
         AppSettings: ''
