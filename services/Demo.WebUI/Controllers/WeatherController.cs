@@ -33,31 +33,42 @@ namespace Demo.WebUI.Controllers
             var webAPIScope = _config["WebAPIScope"];
             var webAPIUrl = _config["WebAPIUrl"];
 
-#if !DEBUG
-            var tokenCredential = new DefaultAzureCredential();
-            var accessToken = tokenCredential.GetToken(new TokenRequestContext(scopes: new string[] { webAPIScope }) { });
-            _logger.LogInformation($"AccessToken: {accessToken}");
-#endif
-
-            List<WeatherForecast> weatherForecast = null;
-            var client = _clientFactory.CreateClient();
-
-#if !DEBUG
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken.Token);
-#endif
-            HttpResponseMessage response = await client.GetAsync(webAPIUrl);
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var content = await response.Content.ReadAsStringAsync();
-                weatherForecast = JsonSerializer.Deserialize<List<WeatherForecast>>(content);
-            }
+#if !DEBUG
+                _logger.LogInformation($"Getting DefaultAzureCredential...");
+                var tokenCredential = new DefaultAzureCredential();
+                var accessToken = tokenCredential.GetToken(new TokenRequestContext(scopes: new string[] { webAPIScope }) { });
+                _logger.LogInformation($"Got AccessToken: {accessToken}");
+#endif
+
+                List<WeatherForecast> weatherForecast = null;
+                var client = _clientFactory.CreateClient();
 
 #if !DEBUG
-            return View(new WeatherViewModel(this.HttpContext.User.Claims, accessToken.Token, weatherForecast));
-#else
-            return View(new WeatherViewModel(this.HttpContext.User.Claims, string.Empty, weatherForecast));
+                _logger.LogInformation($"Adding Token to the header");
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken.Token);
 #endif
+                _logger.LogInformation($"Calling {webAPIUrl}");
+                HttpResponseMessage response = await client.GetAsync(webAPIUrl);
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    weatherForecast = JsonSerializer.Deserialize<List<WeatherForecast>>(content);
+                }
+#if !DEBUG
+                _logger.LogInformation($"Returning data with token");
+                return View(new WeatherViewModel(this.HttpContext.User.Claims, accessToken.Token, weatherForecast));
+#else
+                _logger.LogInformation($"Returning data without token");
+                return View(new WeatherViewModel(this.HttpContext.User.Claims, string.Empty, weatherForecast));
+#endif
+            }
+            catch (System.Exception ex)
+            {
+                _logger.LogError(ex, "Error in WeatherController.Index");
+                throw;
+            }
         }
-
     }
 }
