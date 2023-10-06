@@ -26,6 +26,18 @@ parameters:
   default: ''
 - name: templateFolderName
   default: 'infra\arm'
+- name: bicepFolderName
+  default: 'infra\bicep'
+- name: adDomain
+  default: ''
+- name: adTenantId
+  default: ''
+- name: adClientId
+  default: ''
+- name: webAPIScope
+  default: ''
+- name: webAPIUrl
+  default: ''
 
 # ----------------------------------------------------------------------------------------------------
 jobs:
@@ -37,6 +49,8 @@ jobs:
   variables:
     - name: templateDirectory
       value: '$(Pipeline.Workspace)\s\${{ parameters.templateFolderName }}'
+    - name: bicepDirectory
+      value: '$(Pipeline.Workspace)\s\${{ parameters.bicepFolderName }}'
   steps:
   - task: CmdLine@2
     inputs:
@@ -51,6 +65,9 @@ jobs:
         echo "adminEmail=${{ parameters.adminEmail }}"
         echo "resourceGroupName=${{ parameters.resourceGroupName }}"
         echo "region=${{ parameters.region }}"
+        echo "adDomain=${{ parameters.adDomain }}"
+        echo "adTenantId=${{ parameters.adTenantId }}"
+        echo "adClientId=${{ parameters.adClientId }}"
         echo "Directory of $(templateDirectory):"
         dir  $(templateDirectory) /s
     displayName: 'Display Variables and Tree'
@@ -87,12 +104,39 @@ jobs:
         overrideParameters: '-appName ${{ parameters.apiAppName }}'
         deploymentOutputs: ResourceGroupDeploymentOutputs
 
+    # - task: AzureResourceGroupDeployment@2
+    #   displayName: '4. Create WebApp Service'
+    #   inputs:
+    #     azureSubscription: ${{ parameters.azureSubscription }}
+    #     resourceGroupName: ${{ parameters.resourceGroupName }}
+    #     location: ${{ parameters.region }}
+    #     csmFile: '$(templateDirectory)\appservice-web-app.json'
+    #     overrideParameters: '-appName ${{ parameters.webAppName }}'
+    #     deploymentOutputs: ResourceGroupDeploymentOutputs
+
     - task: AzureResourceGroupDeployment@2
-      displayName: '4. Create WebApp Service'
+      displayName: '4. Create WebApp Bicep'
       inputs:
         azureSubscription: ${{ parameters.azureSubscription }}
         resourceGroupName: ${{ parameters.resourceGroupName }}
         location: ${{ parameters.region }}
-        csmFile: '$(templateDirectory)\appservice-web-app.json'
-        overrideParameters: '-appName ${{ parameters.webAppName }}'
+        csmFile: '$(bicepDirectory)\main.bicep'
+        overrideParameters: >
+          -appName ${{ parameters.webAppName }} 
+          -environmentCode ${{ parameters.environment }}
+          -location ${{ parameters.region }}
+          -webAPIScope ${{ parameters.webAPIScope }}
+          -webAPIUrl ${{ parameters.webAPIUrl }}
+          -adDomain ${{ parameters.adDomain }}
+          -adTenantId ${{ parameters.adTenantId }}
+          -adClientId ${{ parameters.adClientId }}
+          -webAPIScope:  ${{ parameters.webAPIScope }}
+          -webAPIUrl:  ${{ parameters.webAPIUrl }}
         deploymentOutputs: ResourceGroupDeploymentOutputs
+
+- name: adDomain
+  default: ''
+- name: adTenantId
+  default: ''
+- name: adClientId
+  default: ''

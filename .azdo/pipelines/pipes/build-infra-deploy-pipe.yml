@@ -58,6 +58,17 @@ parameters:
 - name: workingDirectoryInfra
   default: '/infra/bicep'
 
+- name: adDomain
+  default: ''
+- name: adTenantId
+  default: ''
+- name: adClientId
+  default: ''
+- name: webAPIScope
+  default: ''
+- name: webAPIUrl
+  default: ''
+
 stages:
 # ------------------------------------------------------------------------------------------------------------------------
 - stage: BuildApps
@@ -105,6 +116,11 @@ stages:
       adminEmail:  ${{ parameters.adminEmail }}
       resourceGroupName:  ${{ parameters.resourceGroupName }}
       region: ${{ parameters.region }}
+      adDomain:  ${{ parameters.adDomain }}
+      adTenantId:  ${{ parameters.adTenantId }}
+      adClientId:  ${{ parameters.adClientId }}
+      webAPIScope:  ${{ parameters.webAPIScope }}
+      webAPIUrl:  ${{ parameters.webAPIUrl }}
 
 # ------------------------------------------------------------------------------------------------------------------------
 - stage: DeployApp

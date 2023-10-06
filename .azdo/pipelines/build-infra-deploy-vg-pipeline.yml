@@ -34,44 +34,39 @@ parameters:
 # ------------------------------------------------------------------------------------------------------------------------
 variables:
   # Lyle's variables
-  # TODO: put the variables into a variable group so they can be updated easily
-  azureSubscription: 'Lyle Luppes Sandbox'
-  webAppName: 'lll-playwright-web'
-  apiAppName: 'lll-playwright-api'
-  apiAppAPIMName: 'lll-playwright-apim'
-  organizationName: 'lyleluppes'
-  adminEmail: 'lyleluppes@microsoft.com'
-  resourceGroupName: 'rg_playwright_testing'
-  region: 'East US'
-  adDomain: 'rutzscodev.onmicrosoft.com'
-  adTenantId: '40b65298-615e-4102-b51c-260f15448b28'
-  adClientId: 'addb1648-4905-4345-9fc2-5f74703d59ae'
-  webAPIScope: 'api://b4d00308-29c0-463d-83c6-c457d18c281b/.default'
-  webAPIUrl: 'https://rutzsco-demo-webapp-api-auth-api-ci2.azure-api.net/WeatherForecast'
-
-  # Scott's variables
-  # azureSubscription: 'Demo Account'
-  # apiAppName: 'rutzscodev-demo-webapp-api-auth-api-ci'
-  # apiAppAPIMName: 'rutzsco-demo-webapp-api-auth-api-ci'
-  # organizationName: 'scrutz'
-  # adminEmail: 'scrutz@microsoft.com'
-  # resourceGroupName: 'rutzscodev-demo-webapp-api-auth-api-ci'
-  # region: 'East US'
-  # adDomain: 'rutzscodev.onmicrosoft.com'
-  # adTenantId: '40b65298-615e-4102-b51c-260f15448b28'
-  # adClientId: 'addb1648-4905-4345-9fc2-5f74703d59ae'
-  # webAPIScope: 'api://b4d00308-29c0-463d-83c6-c457d18c281b/.default'
-  # webAPIUrl: 'https://rutzsco-demo-webapp-api-auth-api-ci2.azure-api.net/WeatherForecast'
+  - group: 'Playwright'
+    # Group contains these variables:
+    # azureSubscription: 'yourSubscriptionName'
+    # webAppName: 'xxx-playwright-web'
+    # apiAppName: 'xxx-playwright-api'
+    # apiAppAPIMName: 'xxx-playwright-apim'
+    # organizationName: 'yourOrgName'
+    # adminEmail: 'you@yourDomain.com'
+    # resourceGroupName: 'rg_playwright_testing'
+    # region: 'East US'
+    # adDomain: 'yourdomain.onmicrosoft.com'
+    # adTenantId: 'someGuid'
+    # adClientId: 'someGuid'
+    # webAPIScope='api://xxxxxGUIDxxxxx/.default'
+    # webAPIUrl='https://xxxxApimNamexxxx.azure-api.net/WeatherForecast'
 
   # Project Static variables
-  webSourcePath: 'services/Demo.WebUI'
-  apiSourcePath: 'services/Demo.API'
-  webPackageName: 'Demo.WebUI.zip'
-  apiPackageName: 'Demo.API.zip'
-  webArtifactName: 'WebApp'
-  apiArtifactName: 'WebApi'
-  workingDirectoryCode: 'services/'
-  workingDirectoryInfra: 'infra/'
+  - name: webSourcePath 
+    value: 'services/Demo.WebUI'
+  - name: apiSourcePath
+    value:  'services/Demo.API'
+  - name: webPackageName
+    value:  'Demo.WebUI.zip'
+  - name: apiPackageName
+    value:  'Demo.API.zip'
+  - name: webArtifactName
+    value:  'WebApp'
+  - name: apiArtifactName
+    value:  'WebApi'
+  - name: workingDirectoryCode
+    value:  'services/'
+  - name: workingDirectoryInfra
+    value:  'infra/'
   
 stages:
 # ------------------------------------------------------------------------------------------------------------------------
@@ -89,8 +84,8 @@ stages:
     azureSubscription: ${{ variables.azureSubscription }}
 
     apiAppAPIMName:  ${{ variables.apiAppAPIMName }}
-    webAPIScope: ${{ variables.webAPIScope }}
-    webAPIUrl: ${{ variables.webAPIUrl }}
+    webAPIScope:  ${{ variables.webAPIScope }}
+    webAPIUrl:  ${{ variables.webAPIUrl }}
 
     webRootDirectory: ${{ variables.apiSourcePath }}
     apiRootDirectory: ${{ variables.apiSourcePath }}
