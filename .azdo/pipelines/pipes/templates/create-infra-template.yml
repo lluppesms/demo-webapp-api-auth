@@ -105,7 +105,7 @@ jobs:
         deploymentOutputs: ResourceGroupDeploymentOutputs
 
     # - task: AzureResourceGroupDeployment@2
-    #   displayName: '4. Create WebApp Service'
+    #   displayName: '4. Create WebApp Service ARM'
     #   inputs:
     #     azureSubscription: ${{ parameters.azureSubscription }}
     #     resourceGroupName: ${{ parameters.resourceGroupName }}
@@ -133,10 +133,3 @@ jobs:
           -webAPIScope:  ${{ parameters.webAPIScope }}
           -webAPIUrl:  ${{ parameters.webAPIUrl }}
         deploymentOutputs: ResourceGroupDeploymentOutputs
-
-- name: adDomain
-  default: ''
-- name: adTenantId
-  default: ''
-- name: adClientId
-  default: ''
