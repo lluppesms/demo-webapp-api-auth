@@ -110,7 +110,7 @@ jobs:
     #     overrideParameters: '-appName ${{ parameters.webAppName)'
     #     deploymentOutputs: ResourceGroupDeploymentOutputs
 
-    - task: AzureResourceGroupDeployment@2
+    - task: AzureResourceManagerTemplateDeployment@3
       displayName: '4. Create WebApp Bicep'
       inputs:
         csmFile: $(bicepDirectory)\main.bicep
