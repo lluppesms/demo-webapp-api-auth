@@ -50,6 +50,10 @@ jobs:
   displayName: Create Infra Job
   variables:
     - group: ${{ parameters.variableGroupName }}
+    - name: environmentNameUpper
+      value: ${{ upper(parameters.environmentName) }}
+    - name: environmentNameLower
+      value: ${{ lower(parameters.environmentName) }}
     - name: templateDirectory
       value: '$(Pipeline.Workspace)\s\${{ parameters.templateFolderName }}'
     - name: bicepDirectory
@@ -71,7 +75,7 @@ jobs:
         echo "organizationName=$(organizationName)"
         echo "resourceGroupName=$(resourceGroupName)"
         echo "region=$(region)"
-        echo "webAppName=$(webAppName)"
+        echo "webAPIScope=$(webAPIScope)"
         echo "webAPIUrl=$(webAPIUrl)"
         echo "webAppName=$(webAppName)"
         echo "Directory Listing for: $(templateDirectory)"
@@ -130,13 +134,13 @@ jobs:
         location: $(region)
         csmFile: '$(bicepDirectory)\main.bicep'
         overrideParameters: >
-          -environmentCode ${{ parameters.environment }}
+          -appName $(webAppName)
+          -environmentCode $(environmentNameLower)
           -adDomain $(adDomain)
           -adTenantId $(adTenantId)
           -adClientId $(adClientId)
           -appName $(webAppName) 
           -location $(region)
           -webAPIScope $(webAPIScope)
-          -webAPIScope:  $(webAPIScope)
           -webAPIUrl:  $(webAPIUrl)
         deploymentOutputs: ResourceGroupDeploymentOutputs

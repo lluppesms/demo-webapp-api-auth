@@ -4,10 +4,10 @@
 // To deploy this Bicep manually:
 // 	 az login
 //   az account set --subscription <subscriptionId>
-//   az deployment group create -n main-deploy-20231006T0800Z --resource-group rg_playwright_testing --template-file 'main.bicep' --parameters appName=lll-playwright environmentCode=demo apiKey=something webAPIScope=api://xxxxxGUIDxxxxx/.default webAPIUrl=https://xxxxApimNamexxxx.azure-api.net/WeatherForecast adDomain=lyleluppes.onmicrosoft.com adTenantId=16b3c013-d300-468d-ac64-7eda0820b6d3 adClientId=ceb4d687-6cb2-42a0-99b0-53de66c04f3b
+//   az deployment group create -n main-deploy-20231006T1341Z --resource-group rg_playwright_testing --template-file 'main.bicep' --parameters appName=lll-playwright-web environmentCode=ci adDomain=yourdomain.onmicrosoft.com adTenantId=00000000-0000-0000-0000-000000000000 adClientId=00000000-0000-0000-0000-000000000000 location=eastUS webAPIScope=api://00000000-0000-0000-0000-000000000000/.default webAPIUrl=https://yourApimName.azure-api.net/WeatherForecast
 // --------------------------------------------------------------------------------
 param appName string = ''
-@allowed(['azd','gha','azdo','dev','demo','qa','stg','ct','prod'])
+@allowed(['azd','gha','azdo','dev','demo','qa','stg','ci','ct','prod'])
 param environmentCode string = 'azd'
 param location string = resourceGroup().location
 
@@ -15,8 +15,8 @@ param storageSku string = 'Standard_LRS'
 param runDateTime string = utcNow()
 param webSiteSku string = 'B1'
 
-param webAPIScope string = '' // 'api://xxxxxGUIDxxxxx/.default'
-param webAPIUrl string = '' // 'https://xxxxApimNamexxxx.azure-api.net/WeatherForecast'
+param webAPIScope string = ''
+param webAPIUrl string = ''
 
 param apiKey string = ''
 
