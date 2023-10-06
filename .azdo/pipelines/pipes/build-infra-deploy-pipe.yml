@@ -83,7 +83,7 @@ stages:
 
 # ------------------------------------------------------------------------------------------------------------------------
 - stage: CreateAzureInfra
-  displayName: Create Azure Infra (${{ parameters.createInfra }})
+  displayName: Create Infra (${{ parameters.createInfra }})
   dependsOn: BuildApps
   condition: succeeded('BuildApps')
   jobs:
