@@ -350,3 +350,6 @@ MigrationBackup/
 .ionide/
 services/Demo.API/appsettings.Development.json
 services/Demo.WebUI/appsettings.development.json
+/test-results/
+/playwright-report/
+/playwright/.cache/
