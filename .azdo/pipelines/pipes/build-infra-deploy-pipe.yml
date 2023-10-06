@@ -50,7 +50,7 @@ parameters:
 stages:
 # ------------------------------------------------------------------------------------------------------------------------
 - stage: BuildApps
-  displayName: Build Apps
+  displayName: Build Apps (${{ parameters.buildDeployApps }})
   jobs:
 
   - ${{ if or(or(eq(lower(parameters.runDevSecOpsScan), 'true'), eq(lower(parameters.runPsRuleScan), 'true')), eq(lower(parameters.runGHAzDOScan), 'true')) }}:
@@ -77,7 +77,7 @@ stages:
 
 # ------------------------------------------------------------------------------------------------------------------------
 - stage: CreateAzureInfra
-  displayName: Create Azure Infra
+  displayName: Create Azure Infra (${{ parameters.createInfra }})
   dependsOn: BuildApps
   condition: succeeded('BuildApps')
   jobs:
@@ -95,7 +95,7 @@ stages:
 
 # ------------------------------------------------------------------------------------------------------------------------
 - stage: DeployApp
-  displayName: Deploy App
+  displayName: Deploy App (${{ parameters.buildDeployApps }})
   dependsOn: CreateAzureInfra
   condition: succeeded('CreateAzureInfra')
   jobs:
