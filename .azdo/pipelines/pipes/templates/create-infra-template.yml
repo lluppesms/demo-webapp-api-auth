@@ -113,10 +113,7 @@ jobs:
     - task: AzureResourceGroupDeployment@2
       displayName: '4. Create WebApp Bicep'
       inputs:
-        azureSubscription: $(azureSubscription)
-        resourceGroupName: $(resourceGroupName)
-        location: $(region)
-        csmFile: '$(bicepDirectory)\main.bicep'
+        csmFile: $(bicepDirectory)\main.bicep
         overrideParameters: >
           -appName $(webAppName)
           -environmentCode $(environmentNameLower)
@@ -126,4 +123,10 @@ jobs:
           -location $(region)
           -webAPIScope $(webAPIScope)
           -webAPIUrl $(webAPIUrl)
-        deploymentOutputs: ResourceGroupDeploymentOutputs
+        deploymentScope: 'Resource Group'
+        azureResourceManagerConnection: $(azureSubscription)
+        action: 'Create Or Update Resource Group'
+        resourceGroupName: '$(resourceGroupName)'
+        location: '$(region)'
+        templateLocation: 'Linked artifact'
+        deploymentMode: 'Incremental'
