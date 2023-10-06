@@ -56,11 +56,10 @@ variables:
   
 stages:
 # ------------------------------------------------------------------------------------------------------------------------
-- variables:
-  # See .azdo/pipelines/readme.me for details how to create this variable group and what it contains
-  - group: 'Playwright'
   
 - template: pipes/build-infra-deploy-pipe.yml
+  variables:
+    - group: 'Playwright'
   parameters:
     createInfra: ${{ parameters.createInfra }}
     buildDeployApps: ${{ parameters.buildDeployApps }}
