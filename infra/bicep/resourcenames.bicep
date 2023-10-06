@@ -16,16 +16,15 @@ var resourceAbbreviations = loadJsonContent('./resourceAbbreviations.json')
 // --------------------------------------------------------------------------------
 output logAnalyticsWorkspaceName string =  toLower('${sanitizedAppNameWithDashes}-logworkspace')
 //output logAnalyticsWorkspaceName string =  toLower('${sanitizedAppNameWithDashes}-${sanitizedEnvironment}-logworkspace')
-//var webSiteName                         = toLower('${sanitizedAppNameWithDashes}-${sanitizedEnvironment}')
-var webSiteName                         = toLower('${sanitizedAppNameWithDashes}-web')
+
+var webSiteName                         = toLower('${sanitizedAppNameWithDashes}')
 output webSiteName string               = webSiteName
+//var webSiteName                         = toLower('${sanitizedAppNameWithDashes}-${sanitizedEnvironment}')
+
 output webSiteAppServicePlanName string = webSiteName
 output webSiteAppInsightsName string    = webSiteName
 // output webSiteAppServicePlanName string = '${webSiteName}-${resourceAbbreviations.appServicePlanSuffix}'
 // output webSiteAppInsightsName string    = '${webSiteName}-${resourceAbbreviations.appInsightsSuffix}'
-var apiSiteName                         = toLower('${sanitizedAppNameWithDashes}-api')
-output apiSiteName string               = apiSiteName
-output apimName string                  = '${webSiteName}-${resourceAbbreviations.apimSuffix}'
 
 // Key Vaults and Storage Accounts can only be 24 characters long
 output storageAccountName string        = take('${sanitizedAppName}${resourceAbbreviations.storageAccountSuffix}${sanitizedEnvironment}', 24)
