@@ -75,12 +75,12 @@ stages:
         rootDirectory: ${{ parameters.apiSourcePath }}
 
 # ------------------------------------------------------------------------------------------------------------------------
-- ${{ if eq(lower(parameters.createInfra), 'true') }}:
-  - stage: CreateAzureInfra
-    displayName: Create Azure Infra
-    dependsOn: BuildApps
-    condition: succeeded('BuildApps')
-    jobs:
+- stage: CreateAzureInfra
+  displayName: Create Azure Infra
+  dependsOn: BuildApps
+  condition: succeeded('BuildApps')
+  jobs:
+  - ${{ if eq(lower(parameters.createInfra), 'true') }}:
     - template: templates/create-infra-template.yml
       parameters:
         azureSubscription: ${{ parameters.azureSubscription }}
