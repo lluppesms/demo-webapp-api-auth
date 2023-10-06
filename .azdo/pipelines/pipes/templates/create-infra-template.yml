@@ -65,6 +65,7 @@ jobs:
         dir  $(templateDirectory) /s
         echo "Directory Listing for: $(bicepDirectory)"
         dir  $(bicepDirectory) /s
+        type $(bicepDirectory)\main.bicep
     displayName: 'Display Variables and Tree'
     continueOnError: true
 
