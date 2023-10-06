@@ -1,5 +1,6 @@
 # ------------------------------------------------------------------------------------------------------------------------
 # Pipeline to build and deploy the entire application
+#   See .azdo/pipelines/readme.me for details how to create the Playwright variable group and what it should contain
 # ------------------------------------------------------------------------------------------------------------------------
 name: $(date:yyyy).$(date:MM).$(date:dd)$(rev:.r)
 
@@ -33,83 +34,46 @@ parameters:
 
 # ------------------------------------------------------------------------------------------------------------------------
 variables:
-  # Lyle's variables
-  # TODO: put the variables into a variable group so they can be updated easily
-  azureSubscription: 'Lyle Luppes Sandbox'
-  webAppName: 'lll-playwright-web'
-  apiAppName: 'lll-playwright-api'
-  apiAppAPIMName: 'lll-playwright-apim'
-  organizationName: 'lyleluppes'
-  adminEmail: 'lyleluppes@microsoft.com'
-  resourceGroupName: 'rg_playwright_testing'
-  region: 'East US'
-  adDomain: 'rutzscodev.onmicrosoft.com'
-  adTenantId: '40b65298-615e-4102-b51c-260f15448b28'
-  adClientId: 'addb1648-4905-4345-9fc2-5f74703d59ae'
-  webAPIScope: 'api://b4d00308-29c0-463d-83c6-c457d18c281b/.default'
-  webAPIUrl: 'https://rutzsco-demo-webapp-api-auth-api-ci2.azure-api.net/WeatherForecast'
+  - name: webSourcePath 
+    value: 'services/Demo.WebUI'
+  - name: apiSourcePath
+    value:  'services/Demo.API'
 
-  # Scott's variables
-  # azureSubscription: 'Demo Account'
-  # apiAppName: 'rutzscodev-demo-webapp-api-auth-api-ci'
-  # apiAppAPIMName: 'rutzsco-demo-webapp-api-auth-api-ci'
-  # organizationName: 'scrutz'
-  # adminEmail: 'scrutz@microsoft.com'
-  # resourceGroupName: 'rutzscodev-demo-webapp-api-auth-api-ci'
-  # region: 'East US'
-  # adDomain: 'rutzscodev.onmicrosoft.com'
-  # adTenantId: '40b65298-615e-4102-b51c-260f15448b28'
-  # adClientId: 'addb1648-4905-4345-9fc2-5f74703d59ae'
-  # webAPIScope: 'api://b4d00308-29c0-463d-83c6-c457d18c281b/.default'
-  # webAPIUrl: 'https://rutzsco-demo-webapp-api-auth-api-ci2.azure-api.net/WeatherForecast'
+  - name: webPackageName
+    value:  'Demo.WebUI.zip'
+  - name: apiPackageName
+    value:  'Demo.API.zip'
 
-  # Project Static variables
-  webSourcePath: 'services/Demo.WebUI'
-  apiSourcePath: 'services/Demo.API'
-  webPackageName: 'Demo.WebUI.zip'
-  apiPackageName: 'Demo.API.zip'
-  webArtifactName: 'WebApp'
-  apiArtifactName: 'WebApi'
-  workingDirectoryCode: 'services/'
-  workingDirectoryInfra: 'infra/'
+  - name: webArtifactName
+    value:  'WebApp'
+  - name: apiArtifactName
+    value:  'WebApi'
+
+  - name: workingDirectoryCode
+    value:  'services/'
+  - name: workingDirectoryInfra
+    value:  'infra/'
   
 stages:
 # ------------------------------------------------------------------------------------------------------------------------
+  
 - template: pipes/build-infra-deploy-pipe.yml
   parameters:
+    variableGroupName: 'Playwright'
+
     createInfra: ${{ parameters.createInfra }}
     buildDeployApps: ${{ parameters.buildDeployApps }}
     runDevSecOpsScan: ${{ parameters.runDevSecOpsScan }}
     runGHAzDOScan: ${{ parameters.runGHAzDOScan }}
 
-    organizationName:  ${{ variables.organizationName }}
-    adminEmail:  ${{ variables.adminEmail }}
-    resourceGroupName:  ${{ variables.resourceGroupName }}
-    region: ${{ variables.region }}
-    azureSubscription: ${{ variables.azureSubscription }}
-
-    apiAppAPIMName:  ${{ variables.apiAppAPIMName }}
-    webAPIScope: ${{ variables.webAPIScope }}
-    webAPIUrl: ${{ variables.webAPIUrl }}
-
-    webRootDirectory: ${{ variables.apiSourcePath }}
-    apiRootDirectory: ${{ variables.apiSourcePath }}
-
-    webAppName:  ${{ variables.webAppName }}
-    apiAppName:  ${{ variables.apiAppName }}
+    webSourcePath: ${{ variables.webSourcePath }}
+    apiSourcePath: ${{ variables.apiSourcePath }}
 
     webPackageName: ${{ variables.webPackageName }}
     apiPackageName: ${{ variables.apiPackageName }}
-
-    webSourcePath: ${{ variables.webSourcePath }}
-    apiSourcePath: ${{ variables.apiSourcePath }}
 
     webArtifactName:  ${{ variables.webArtifactName }}
     apiArtifactName:  ${{ variables.apiArtifactName }}
 
     workingDirectoryCode: ${{ variables.workingDirectoryCode }}
     workingDirectoryInfra: ${{ variables.workingDirectoryInfra }}
-
-    adDomain: ${{ variables.adDomain }}
-    adTenantId: ${{ variables.adTenantId }}
-    adClientId: ${{ variables.acClientId }}

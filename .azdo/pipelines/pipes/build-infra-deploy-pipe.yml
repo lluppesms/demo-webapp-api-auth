@@ -2,67 +2,36 @@
 # Pipe Template to build and deploy the entire application
 # ------------------------------------------------------------------------------------------------------------------------
 parameters:
+- name: variableGroupName
+  default: ''
 - name: createInfra
   default: true
 - name: buildDeployApps
   default: true
-- name: buildConfiguration
-  default: 'Release'
-- name: azureSubscription
-  default: ''
-- name: organizationName
-  default: ''
-- name: adminEmail
-  default: ''
-- name: resourceGroupName
-  default: ''
-- name: region
-  default: ''
-
-- name: apiAppAPIMName
-  default: ''
-
-- name: webAppName
-  default: ''
-- name: apiAppName
-  default: ''
-
-- name: webPackageName
-  default: ''
-- name: apiPackageName
-  default: ''
-
-- name: webSourcePath
-  default: ''
-- name: apiSourcePath
-  default: ''
-
-- name: webArtifactName
-  default: ''
-- name: apiArtifactName
-  default: ''
-
 - name: runDevSecOpsScan
   default: 'false'
 - name: runPsRuleScan
   default: 'false'
 - name: runGHAzDOScan
   default: 'false'
+- name: webSourcePath
+  default: ''
+- name: apiSourcePath
+  default: ''
+- name: webPackageName
+  default: ''
+- name: apiPackageName
+  default: ''
+- name: webArtifactName
+  default: ''
+- name: apiArtifactName
+  default: ''
 - name: workingDirectoryCode
   default: 'src/myproject'
 - name: workingDirectoryInfra
   default: '/infra/bicep'
-
-- name: adDomain
-  default: ''
-- name: adTenantId
-  default: ''
-- name: adClientId
-  default: ''
-- name: webAPIScope
-  default: ''
-- name: webAPIUrl
-  default: ''
+- name: buildConfiguration
+  default: 'Release'
 
 stages:
 # ------------------------------------------------------------------------------------------------------------------------
@@ -102,20 +71,8 @@ stages:
   jobs:
   - template: templates/create-infra-template.yml
     parameters:
+      variableGroupName: ${{ parameters.variableGroupName }}
       createInfra: ${{ parameters.createInfra }}
-      azureSubscription: ${{ parameters.azureSubscription }}
-      webAppName:  ${{ parameters.webAppName }}
-      apiAppName:  ${{ parameters.apiAppName }}
-      apiAppAPIMName:  ${{ parameters.apiAppAPIMName }}
-      organizationName:  ${{ parameters.organizationName }}
-      adminEmail:  ${{ parameters.adminEmail }}
-      resourceGroupName:  ${{ parameters.resourceGroupName }}
-      region: ${{ parameters.region }}
-      adDomain:  ${{ parameters.adDomain }}
-      adTenantId:  ${{ parameters.adTenantId }}
-      adClientId:  ${{ parameters.adClientId }}
-      webAPIScope:  ${{ parameters.webAPIScope }}
-      webAPIUrl:  ${{ parameters.webAPIUrl }}
 
 # ------------------------------------------------------------------------------------------------------------------------
 - stage: DeployApp
@@ -125,10 +82,8 @@ stages:
   jobs:
   - template: templates/deploy-apps-template.yml
     parameters:
+      variableGroupName: ${{ parameters.variableGroupName }}
       buildDeployApps: ${{ parameters.buildDeployApps }}
-      azureSubscription: ${{ parameters.azureSubscription }}
-      webAppName:  ${{ parameters.webAppName }}
-      apiAppName:  ${{ parameters.apiAppName }}
       webPackageName: ${{ parameters.webPackageName }}
       apiPackageName: ${{ parameters.apiPackageName }}
       webArtifactName: ${{ parameters.webArtifactName }}

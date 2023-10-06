@@ -2,26 +2,29 @@
 # Pipe Template to build and deploy the entire application
 # ------------------------------------------------------------------------------------------------------------------------
 parameters:
-- name: variableGroupName
-  default: ''
-
 - name: createInfra
   default: true
 - name: buildDeployApps
   default: true
-- name: runDevSecOpsScan
-  default: 'false'
-- name: runPsRuleScan
-  default: 'false'
-- name: runGHAzDOScan
-  default: 'false'
-
 - name: buildConfiguration
   default: 'Release'
-
-- name: webSourcePath
+- name: azureSubscription
   default: ''
-- name: apiSourcePath
+- name: organizationName
+  default: ''
+- name: adminEmail
+  default: ''
+- name: resourceGroupName
+  default: ''
+- name: region
+  default: ''
+
+- name: apiAppAPIMName
+  default: ''
+
+- name: webAppName
+  default: ''
+- name: apiAppName
   default: ''
 
 - name: webPackageName
@@ -29,44 +32,37 @@ parameters:
 - name: apiPackageName
   default: ''
 
+- name: webSourcePath
+  default: ''
+- name: apiSourcePath
+  default: ''
+
 - name: webArtifactName
   default: ''
 - name: apiArtifactName
   default: ''
 
+- name: runDevSecOpsScan
+  default: 'false'
+- name: runPsRuleScan
+  default: 'false'
+- name: runGHAzDOScan
+  default: 'false'
 - name: workingDirectoryCode
   default: 'src/myproject'
 - name: workingDirectoryInfra
   default: '/infra/bicep'
 
-# From VG:
-# - name: adminEmail
-#   default: ''
-# - name: adDomain
-#   default: ''
-# - name: adTenantId
-#   default: ''
-# - name: adClientId
-#   default: ''
-# - name: apiAppName
-#   default: ''
-# - name: apiAppAPIMName
-#   default: ''
-# - name: azureSubscription
-#   default: ''
-# - name: organizationName
-#   default: ''
-# - name: region
-#   default: ''
-# - name: resourceGroupName
-#   default: ''
-# - name: webAPIScope
-#   default: ''
-# - name: webAPIUrl
-#   default: ''
-# - name: webAppName
-#   default: ''
-
+- name: adDomain
+  default: ''
+- name: adTenantId
+  default: ''
+- name: adClientId
+  default: ''
+- name: webAPIScope
+  default: ''
+- name: webAPIUrl
+  default: ''
 
 stages:
 # ------------------------------------------------------------------------------------------------------------------------
@@ -104,24 +100,22 @@ stages:
   dependsOn: BuildApps
   condition: succeeded('BuildApps')
   jobs:
-  - template: templates/create-infra-vg-template.yml
+  - template: templates/create-infra-template.yml
     parameters:
-      variableGroupName: ${{ parameters.variableGroupName }}
       createInfra: ${{ parameters.createInfra }}
-      # From VG
-      #adminEmail:  ${{ parameters.adminEmail }}
-      #adDomain:  ${{ parameters.adDomain }}
-      #adTenantId:  ${{ parameters.adTenantId }}
-      #adClientId:  ${{ parameters.adClientId }}
-      #apiAppAPIMName:  ${{ parameters.apiAppAPIMName }}
-      #apiAppName:  ${{ parameters.apiAppName }}
-      #azureSubscription: ${{ parameters.azureSubscription }}
-      #organizationName:  ${{ parameters.organizationName }}
-      #region: ${{ parameters.region }}
-      #resourceGroupName:  ${{ parameters.resourceGroupName }}
-      #webAPIScope:  ${{ parameters.webAPIScope }}
-      #webAPIUrl:  ${{ parameters.webAPIUrl }}
-      #webAppName:  ${{ parameters.webAppName }}
+      azureSubscription: ${{ parameters.azureSubscription }}
+      webAppName:  ${{ parameters.webAppName }}
+      apiAppName:  ${{ parameters.apiAppName }}
+      apiAppAPIMName:  ${{ parameters.apiAppAPIMName }}
+      organizationName:  ${{ parameters.organizationName }}
+      adminEmail:  ${{ parameters.adminEmail }}
+      resourceGroupName:  ${{ parameters.resourceGroupName }}
+      region: ${{ parameters.region }}
+      adDomain:  ${{ parameters.adDomain }}
+      adTenantId:  ${{ parameters.adTenantId }}
+      adClientId:  ${{ parameters.adClientId }}
+      webAPIScope:  ${{ parameters.webAPIScope }}
+      webAPIUrl:  ${{ parameters.webAPIUrl }}
 
 # ------------------------------------------------------------------------------------------------------------------------
 - stage: DeployApp
@@ -129,15 +123,13 @@ stages:
   dependsOn: CreateAzureInfra
   condition: succeeded('CreateAzureInfra')
   jobs:
-  - template: templates/deploy-apps-vg-template.yml
+  - template: templates/deploy-apps-template.yml
     parameters:
-      variableGroupName: ${{ parameters.variableGroupName }}
       buildDeployApps: ${{ parameters.buildDeployApps }}
+      azureSubscription: ${{ parameters.azureSubscription }}
+      webAppName:  ${{ parameters.webAppName }}
+      apiAppName:  ${{ parameters.apiAppName }}
       webPackageName: ${{ parameters.webPackageName }}
       apiPackageName: ${{ parameters.apiPackageName }}
       webArtifactName: ${{ parameters.webArtifactName }}
       apiArtifactName: ${{ parameters.apiArtifactName }} 
-      # From VG
-      #azureSubscription: ${{ parameters.azureSubscription }}
-      #webAppName:  ${{ parameters.webAppName }}
-      #apiAppName:  ${{ parameters.apiAppName }}

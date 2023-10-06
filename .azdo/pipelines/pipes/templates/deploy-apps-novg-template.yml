@@ -2,27 +2,26 @@
 # Template to deploy the WebAPI and WebApp to Azure
 # ----------------------------------------------------------------------------------------------------
 parameters: 
-- name: variableGroupName
-  default: ''
 - name: buildDeployApps
   default: true
+- name: stageName
+  default: 'CI'
 - name: environment
   default: 'CI'
+- name: azureSubscription
+  default: ''
+- name: webAppName
+  default: ''
 - name: webPackageName
   default: ''  
+- name: apiAppName
+  default: ''
 - name: apiPackageName
   default: ''  
 - name: apiArtifactName
   default: ''  
 - name: webArtifactName
   default: ''  
-# From VG
-# - name: apiAppName
-#   default: ''
-# - name: azureSubscription
-#   default: ''
-# - name: webAppName
-#   default: ''
 
 # ----------------------------------------------------------------------------------------------------
 jobs:
@@ -32,8 +31,6 @@ jobs:
 
 - job: DeployAppsJob
   displayName: Deploy Apps Job
-  variables:
-    - group: ${{ parameters.variableGroupName }}
   steps:
   - ${{ if eq(lower(parameters.buildDeployApps), 'true') }}:
     - task: DownloadPipelineArtifact@2
@@ -51,14 +48,15 @@ jobs:
   - task: CmdLine@2
     inputs:
       script: |
+        echo "stageName=${{ parameters.stageName }}"
         echo "environment=${{ parameters.environment }}"
+        echo "azureSubscription=${{ parameters.azureSubscription }}"
+        echo "webAppName=${{ parameters.webAppName }}"
         echo "webPackageName=${{ parameters.webPackageName }}"
+        echo "apiAppName=${{ parameters.apiAppName }}"
         echo "apiPackageName=${{ parameters.apiPackageName }}"
         echo "apiArtifactName=${{ parameters.apiArtifactName }}"
         echo "webArtifactName=${{ parameters.webArtifactName }}"
-        echo "apiAppName=${{ variables.apiAppName }}"
-        echo "webAppName=${{ variables.webAppName }}"
-        echo "azureSubscription=$(azureSubscription)"
         echo "Directory of Pipeline.Workspace:"
         dir  $(Pipeline.Workspace) /s
     displayName: 'Display Variables and Tree'
@@ -68,15 +66,15 @@ jobs:
     - task: AzureRmWebAppDeployment@4
       displayName: '1. Deploy API'
       inputs:
-        azureSubscription: $(azureSubscription)
-        WebAppName: ${{ variables.apiAppName }}
+        azureSubscription: ${{ parameters.azureSubscription }}
+        WebAppName: ${{ parameters.apiAppName }}
         package: '$(Pipeline.Workspace)\WebApi\*.zip'
         AppSettings: ''
 
     - task: AzureRmWebAppDeployment@4
       displayName: '2. Deploy WebApp'
       inputs:
-        azureSubscription: $(azureSubscription)
-        WebAppName: ${{ variables.webAppName }}
+        azureSubscription: ${{ parameters.azureSubscription }}
+        WebAppName: ${{ parameters.webAppName }}
         package: '$(Pipeline.Workspace)\WebApp\*.zip'
         AppSettings: ''
