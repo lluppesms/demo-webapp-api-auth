@@ -1,0 +1,142 @@
+# ----------------------------------------------------------------------------------------------------
+# Template to deploy Azure Resources for one environment
+# ----------------------------------------------------------------------------------------------------
+parameters: 
+- name: variableGroupName
+  default: ''
+- name: createInfra
+  default: true
+- name: environment
+  default: 'CI'
+# From VG
+# - name: adminEmail
+#   default: ''
+# - name: adDomain
+#   default: ''
+# - name: adTenantId
+#   default: ''
+# - name: adClientId
+#   default: ''
+# - name: apiAppName
+#   default: ''
+# - name: apiAppAPIMName
+#   default: ''
+# - name: azureSubscription
+#   default: ''
+# - name: organizationName
+#   default: ''
+# - name: region
+#   default: ''
+# - name: resourceGroupName
+#   default: ''
+# - name: webAPIScope
+#   default: ''
+# - name: webAPIUrl
+#   default: ''
+# - name: webAppName
+#   default: ''
+
+- name: templateFolderName
+  default: 'infra\arm'
+- name: bicepFolderName
+  default: 'infra\bicep'
+
+# ----------------------------------------------------------------------------------------------------
+jobs:
+- deployment: CreateInfra
+  displayName: Create Infra
+  environment: ${{ parameters.environment }}
+- job: CreateInfraJob
+  displayName: Create Infra Job
+  variables:
+    - group: ${{ parameters.variableGroupName }}
+    - name: templateDirectory
+      value: '$(Pipeline.Workspace)\s\${{ parameters.templateFolderName }}'
+    - name: bicepDirectory
+      value: '$(Pipeline.Workspace)\s\${{ parameters.bicepFolderName }}'
+  steps:
+  - task: CmdLine@2
+    inputs:
+      script: |
+        echo "createInfra=${{ parameters.createInfra }}"
+        echo "environment=${{ parameters.environment }}"
+
+        echo "adminEmail=$(adminEmail)"
+        echo "adDomain=$(adDomain)"
+        echo "adTenantId=$(adTenantId)"
+        echo "adClientId=$(adClientId)"
+        echo "apiAppName=$(apiAppName)"
+        echo "apiAppAPIMName=$(apiAppAPIMName)"
+        echo "azureSubscription=$(azureSubscription)"
+        echo "organizationName=$(organizationName)"
+        echo "resourceGroupName=$(resourceGroupName)"
+        echo "region=$(region)"
+        echo "webAppName=$(webAppName)"
+        echo "webAPIUrl=$(webAPIUrl)"
+        echo "webAppName=$(webAppName)"
+        echo "Directory Listing for: $(templateDirectory)"
+        dir  $(templateDirectory) /s
+        echo "Directory Listing for: $(bicepDirectory)"
+        dir  $(bicepDirectory) /s
+    displayName: 'Display Variables and Tree'
+    continueOnError: true
+
+  - ${{ if eq(lower(parameters.createInfra), 'true') }}:
+    - task: AzureResourceGroupDeployment@2
+      displayName: '1. Create APIM Consumption'
+      inputs:
+        azureSubscription: $(azureSubscription)
+        resourceGroupName: $(resourceGroupName)
+        location: $(region)
+        csmFile: '$(templateDirectory)\api-management-consumption.json'
+        overrideParameters: '-apimName $(apiAppAPIMName)2 -organizationName $($)organizationName) -adminEmail $(adminEmail)'
+        deploymentOutputs: ResourceGroupDeploymentOutputs
+
+    - task: AzureResourceGroupDeployment@2
+      displayName: '2. Create APIM Dev'
+      inputs:
+        azureSubscription: $(azureSubscription)
+        resourceGroupName: $(resourceGroupName)
+        location: $(region)
+        csmFile: '$(templateDirectory)\api-management-core.json'
+        overrideParameters: '-serviceName $(apiAppAPIMName)3 -publisherName $(organizationName) -publisherEmail $(adminEmail)'
+        deploymentOutputs: ResourceGroupDeploymentOutputs
+
+    - task: AzureResourceGroupDeployment@2
+      displayName: '3. Create WebAPI Service'
+      inputs:
+        azureSubscription: $(azureSubscription)
+        resourceGroupName: $(resourceGroupName)
+        location: $(region)
+        csmFile: '$(templateDirectory)\appservice-web-api.json'
+        overrideParameters: '-appName $(apiAppName)'
+        deploymentOutputs: ResourceGroupDeploymentOutputs
+
+    # - task: AzureResourceGroupDeployment@2
+    #   displayName: '4. Create WebApp Service ARM'
+    #   inputs:
+    #     azureSubscription: ${{ parameters.azureSubscription)
+    #     resourceGroupName: ${{ parameters.resourceGroupName)
+    #     location: ${{ parameters.region)
+    #     csmFile: '$(templateDirectory)\appservice-web-app.json'
+    #     overrideParameters: '-appName ${{ parameters.webAppName)'
+    #     deploymentOutputs: ResourceGroupDeploymentOutputs
+
+    - task: AzureResourceGroupDeployment@2
+      displayName: '4. Create WebApp Bicep'
+      inputs:
+        azureSubscription: $(azureSubscription)
+        resourceGroupName: $(resourceGroupName)
+        location: $(region)
+        csmFile: '$(bicepDirectory)\main.bicep'
+        overrideParameters: >
+          -environmentCode ${{ parameters.environment }}
+          -adDomain $(adDomain)
+          -adTenantId $(adTenantId)
+          -adClientId $(adClientId)
+          -appName $(webAppName) 
+          -location $(region)
+          -webAPIScope $(webAPIScope)
+          -webAPIScope:  $(webAPIScope)
+          -webAPIUrl:  $(webAPIUrl)
+        deploymentOutputs: ResourceGroupDeploymentOutputs

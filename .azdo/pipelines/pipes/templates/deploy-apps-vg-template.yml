@@ -1,0 +1,82 @@
+# ----------------------------------------------------------------------------------------------------
+# Template to deploy the WebAPI and WebApp to Azure
+# ----------------------------------------------------------------------------------------------------
+parameters: 
+- name: variableGroupName
+  default: ''
+- name: buildDeployApps
+  default: true
+- name: environment
+  default: 'CI'
+- name: webPackageName
+  default: ''  
+- name: apiPackageName
+  default: ''  
+- name: apiArtifactName
+  default: ''  
+- name: webArtifactName
+  default: ''  
+# From VG
+# - name: apiAppName
+#   default: ''
+# - name: azureSubscription
+#   default: ''
+# - name: webAppName
+#   default: ''
+
+# ----------------------------------------------------------------------------------------------------
+jobs:
+- deployment: DeployApps
+  displayName: Deploy Apps
+  environment: ${{ parameters.environment }}
+
+- job: DeployAppsJob
+  displayName: Deploy Apps Job
+  variables:
+    - group: ${{ parameters.variableGroupName }}
+  steps:
+  - ${{ if eq(lower(parameters.buildDeployApps), 'true') }}:
+    - task: DownloadPipelineArtifact@2
+      displayName: 'Download WebApi Artifact'
+      inputs:
+        artifact: ${{ parameters.apiArtifactName }}
+        targetPath: '$(Pipeline.Workspace)\WebApi' 
+
+    - task: DownloadPipelineArtifact@2
+      displayName: 'Download WebApp Artifact'
+      inputs:
+        artifact: ${{ parameters.webArtifactName }}
+        targetPath: '$(Pipeline.Workspace)\WebApp' 
+
+  - task: CmdLine@2
+    inputs:
+      script: |
+        echo "environment=${{ parameters.environment }}"
+        echo "webPackageName=${{ parameters.webPackageName }}"
+        echo "apiPackageName=${{ parameters.apiPackageName }}"
+        echo "apiArtifactName=${{ parameters.apiArtifactName }}"
+        echo "webArtifactName=${{ parameters.webArtifactName }}"
+        echo "apiAppName=${{ variables.apiAppName }}"
+        echo "webAppName=${{ variables.webAppName }}"
+        echo "azureSubscription=$(azureSubscription)"
+        echo "Directory of Pipeline.Workspace:"
+        dir  $(Pipeline.Workspace) /s
+    displayName: 'Display Variables and Tree'
+    continueOnError: true
+
+  - ${{ if eq(lower(parameters.buildDeployApps), 'true') }}:
+    - task: AzureRmWebAppDeployment@4
+      displayName: '1. Deploy API'
+      inputs:
+        azureSubscription: $(azureSubscription)
+        WebAppName: ${{ variables.apiAppName }}
+        package: '$(Pipeline.Workspace)\WebApi\*.zip'
+        AppSettings: ''
+
+    - task: AzureRmWebAppDeployment@4
+      displayName: '2. Deploy WebApp'
+      inputs:
+        azureSubscription: $(azureSubscription)
+        WebAppName: ${{ variables.webAppName }}
+        package: '$(Pipeline.Workspace)\WebApp\*.zip'
+        AppSettings: ''

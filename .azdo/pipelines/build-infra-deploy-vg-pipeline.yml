@@ -41,14 +41,17 @@ variables:
     value: 'services/Demo.WebUI'
   - name: apiSourcePath
     value:  'services/Demo.API'
+
   - name: webPackageName
     value:  'Demo.WebUI.zip'
   - name: apiPackageName
     value:  'Demo.API.zip'
+
   - name: webArtifactName
     value:  'WebApp'
   - name: apiArtifactName
     value:  'WebApi'
+
   - name: workingDirectoryCode
     value:  'services/'
   - name: workingDirectoryInfra
@@ -57,36 +60,20 @@ variables:
 stages:
 # ------------------------------------------------------------------------------------------------------------------------
   
-- template: pipes/build-infra-deploy-pipe.yml
-  variables:
-    - group: 'Playwright'
+- template: pipes/build-infra-deploy-vg-pipe.yml
   parameters:
+    variableGroupName: 'Playwright'
+
     createInfra: ${{ parameters.createInfra }}
     buildDeployApps: ${{ parameters.buildDeployApps }}
     runDevSecOpsScan: ${{ parameters.runDevSecOpsScan }}
     runGHAzDOScan: ${{ parameters.runGHAzDOScan }}
 
-    organizationName:  ${{ variables.organizationName }}
-    adminEmail:  ${{ variables.adminEmail }}
-    resourceGroupName:  ${{ variables.resourceGroupName }}
-    region: ${{ variables.region }}
-    azureSubscription: ${{ variables.azureSubscription }}
-
-    apiAppAPIMName:  ${{ variables.apiAppAPIMName }}
-    webAPIScope:  ${{ variables.webAPIScope }}
-    webAPIUrl:  ${{ variables.webAPIUrl }}
-
-    webRootDirectory: ${{ variables.apiSourcePath }}
-    apiRootDirectory: ${{ variables.apiSourcePath }}
-
-    webAppName:  ${{ variables.webAppName }}
-    apiAppName:  ${{ variables.apiAppName }}
+    webSourcePath: ${{ variables.webSourcePath }}
+    apiSourcePath: ${{ variables.apiSourcePath }}
 
     webPackageName: ${{ variables.webPackageName }}
     apiPackageName: ${{ variables.apiPackageName }}
-
-    webSourcePath: ${{ variables.webSourcePath }}
-    apiSourcePath: ${{ variables.apiSourcePath }}
 
     webArtifactName:  ${{ variables.webArtifactName }}
     apiArtifactName:  ${{ variables.apiArtifactName }}
@@ -94,6 +81,18 @@ stages:
     workingDirectoryCode: ${{ variables.workingDirectoryCode }}
     workingDirectoryInfra: ${{ variables.workingDirectoryInfra }}
 
-    adDomain: ${{ variables.adDomain }}
-    adTenantId: ${{ variables.adTenantId }}
-    adClientId: ${{ variables.acClientId }}
+    # From VG:
+    # adminEmail:  ${{ variables.adminEmail }}
+    # adDomain: ${{ variables.adDomain }}
+    # adTenantId: ${{ variables.adTenantId }}
+    # adClientId: ${{ variables.acClientId }}
+    # apiAppName:  ${{ variables.apiAppName }}
+    # apiAppAPIMName:  ${{ variables.apiAppAPIMName }}
+    # apiKey
+    # azureSubscription: ${{ variables.azureSubscription }}
+    # organizationName:  ${{ variables.organizationName }}
+    # region: ${{ variables.region }}
+    # resourceGroupName:  ${{ variables.resourceGroupName }}
+    # webAPIScope:  ${{ variables.webAPIScope }}
+    # webAPIUrl:  ${{ variables.webAPIUrl }}
+    # webAppName:  ${{ variables.webAppName }}
