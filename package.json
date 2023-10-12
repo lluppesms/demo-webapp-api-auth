@@ -9,6 +9,11 @@
   "license": "ISC",
   "devDependencies": {
     "@playwright/test": "^1.39.0",
+    "playwright-trx-reporter": "^1.0.6",
     "@types/node": "^20.8.2"
+  },
+  "dependencies": {
+    "node-fetch": "^2.6.7",
+    "uuid": "^9.0.1"
   }
 }
