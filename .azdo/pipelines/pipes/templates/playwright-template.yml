@@ -17,8 +17,8 @@ jobs:
 - deployment: RunPlaywrightTests
   displayName: Run Playwright Tests
   environment: ${{ parameters.environment }}
-- job: DeployAppsJob
-  displayName: Deploy Apps Job
+- job: RunTestsJob
+  displayName: Run Tests Job
 
   variables:
     - group: ${{ parameters.variableGroupName }}
