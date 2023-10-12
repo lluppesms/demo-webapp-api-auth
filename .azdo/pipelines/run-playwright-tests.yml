@@ -24,4 +24,4 @@ stages:
     keyVaultVariableGroupName: 'PlaywrightSecrets'
     environment: 'CI'
     baseTestingUrl: 'https://lll-playwright-web.azurewebsites.net/'
-    testScriptPath: 'tests'
+    testScriptPath: 'playwright'
