@@ -57,8 +57,16 @@ jobs:
     env:
       CI: 'true'
       BASE_URL: ${{ parameters.baseTestingUrl }}
-      USERNAME: $(testUserName)
-      PASSWORD: $(testUserPassword)
+      TESTUSER: $(testUserName)
+      TESTPASSWORD: $(testUserPassword)
+
+  - task: CmdLine@2
+    inputs:
+      script: |
+        echo "Directory of pipeline workspace:"
+        tree $(Pipeline.Workspace)
+    displayName: 'Display Files'
+    continueOnError: true
 
   - task: PublishPipelineArtifact@1
     displayName: 'Publish PW Artifacts'
