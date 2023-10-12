@@ -1,0 +1,74 @@
+# ----------------------------------------------------------------------------------------------------
+# Template to run a Playwright test suite in an Azure DevOps pipeline
+# ----------------------------------------------------------------------------------------------------
+parameters:
+- name: variableGroupName
+  default: ''
+- name: keyVaultVariableGroupName
+  default: ''  
+- name: environment
+  default: 'CI'
+- name: baseTestingUrl
+  default: ''
+- name: testScriptPath
+  default: ''
+
+jobs:
+- deployment: RunPlaywrightTests
+  displayName: Run Playwright Tests
+  environment: ${{ parameters.environment }}
+- job: DeployAppsJob
+  displayName: Deploy Apps Job
+
+  variables:
+    - group: ${{ parameters.variableGroupName }}
+    - group: ${{ parameters.keyVaultVariableGroupName }}
+
+  steps:
+    - task: CmdLine@2
+      inputs:
+      script: |
+        echo "variableGroupName=${{ parameters.variableGroupName }}"
+        echo "keyVaultVariableGroupName=${{ parameters.keyVaultVariableGroupName }}"
+        echo "environment=${{ parameters.environment }}"
+        echo "baseTestingUrl=${{ parameters.baseTestingUrl }}"
+        echo "testScriptPath=${{ parameters.testScriptPath }}"
+        echo "Directory of pipeline workspace:"
+        tree $(Pipeline.Workspace)
+    displayName: 'Display Variables and Tree'
+    continueOnError: true
+
+    - task: NodeTool@0
+      displayName: 'Install Node.js'
+      inputs:
+        versionSpec: '18'
+
+    - script: npm ci
+      displayName: 'npm Clean Install'
+      workingDirectory: ${{ parameters.testScriptPath }}
+
+    - script: npx playwright install --with-deps
+      displayName: 'Install Playwright Browsers'
+      workingDirectory: ${{ parameters.testScriptPath }}
+
+    - script: npx playwright test
+      workingDirectory: ${{ parameters.testScriptPath }}
+      displayName: 'Run Playwright tests'
+      env:
+        CI: 'true'
+        BASE_URL: ${{ parameters.baseTestingUrl }}
+        USERNAME: $(testUserName)
+        PASSWORD: $(testUserPassword)
+
+    - task: PublishPipelineArtifact@1
+      inputs:
+        targetPath: ${{ parameters.testScriptPath }}/test-results
+        artifact: playwright-report
+        publishLocation: 'pipeline'
+      condition: succeededOrFailed()
+
+    - task: PublishTestResults@2
+      inputs:
+        testResultsFormat: 'VSTest'
+        testResultsFiles: '**/${{ parameters.testScriptPath }}/test-results/*.trx'
+      condition: succeededOrFailed()
