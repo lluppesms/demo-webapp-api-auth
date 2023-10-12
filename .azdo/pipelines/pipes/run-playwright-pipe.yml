@@ -1,0 +1,27 @@
+# ------------------------------------------------------------------------------------------------------------------------
+# Pipe Template to run a Playwright test
+# ------------------------------------------------------------------------------------------------------------------------
+parameters:
+- name: variableGroupName
+  default: ''
+- name: keyVaultVariableGroupName
+  default: ''
+- name: environment
+  default: ''
+- name: baseTestingUrl
+  default: ''
+- name: testScriptPath
+  default: ''
+
+stages:
+# ------------------------------------------------------------------------------------------------------------------------
+- stage: SmokeTestApp
+  displayName: Smoke Test App (${{ parameters.environment }})
+  jobs:
+  - template: templates/playwright-template.yml
+    parameters:
+      variableGroupName: ${{ parameters.variableGroupName }}
+      keyVaultVariableGroupName: ${{ parameters.keyVaultVariableGroupName }}
+      environment: ${{ parameters.environment }}
+      baseTestingUrl: ${{ parameters.baseTestingUrl }}
+      testScriptPath: ${{ parameters.testScriptPath }}

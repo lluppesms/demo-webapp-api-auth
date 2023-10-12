@@ -13,12 +13,12 @@ parameters:
   - name: runPlaywright
     displayName: Run Playwright Tests
     type: boolean
-    default: false
+    default: true
 
 stages:
 # ------------------------------------------------------------------------------------------------------------------------
   
-- template: pipes/build-infra-deploy-pipe.yml
+- template: pipes/run-playwright-pipe.yml
   parameters:
     variableGroupName: 'Playwright'
     keyVaultVariableGroupName: 'PlaywrightSecrets'
