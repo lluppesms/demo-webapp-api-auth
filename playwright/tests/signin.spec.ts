@@ -1,12 +1,14 @@
 import { test, expect } from '@playwright/test';
 import { defineConfig } from '@playwright/test';
+
 export default defineConfig({
-  reporter: ['junit', { outputFile: 'test-results/e2e-junit-results.xml' }]
-  // ,  This isn't working... look at the following articles to define it...
-  // BASE_URL: 'https://lll-playwright-web.azurewebsites.net/',
-  // USERNAME: 'TestUser@lyleluppes.onmicrosoft.com',
-  // PASSWORD:'8Y94!sXf'
+  //reporter: ['junit', { outputFile: './test-results/e2e-junit-results.xml' }]
+  reporter: [
+    'junit', { outputFile: './test-results/e2e-junit-results.xml' },
+    'html', {outputFile: './test-results/test-results.html'}
+  ]
 });
+
 console.log("COMPUTERNAME: ", process.env.COMPUTERNAME)
 if (process.env.COMPUTERNAME?.startsWith("DESKTOP")){
   require('dotenv').config({path: '.env'});
