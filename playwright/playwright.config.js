@@ -1,12 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
 
-/**
-  Read environment variables from file.
-    https://github.com/motdotla/dotenv
-    https://medium.com/ascentic-technology/test-multiple-environments-locally-in-playwright-with-env-file-1c41b792822
-    https://stackoverflow.com/questions/70861292/playwright-tests-using-variable-from-env-file
- */
-
 if (process.env.NODE_ENV === 'development'){
   require('dotenv').config({path: '/.env'});
 }

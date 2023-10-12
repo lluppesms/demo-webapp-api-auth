@@ -5,7 +5,7 @@ parameters:
 - name: variableGroupName
   default: ''
 - name: keyVaultVariableGroupName
-  default: ''  
+  default: ''
 - name: environment
   default: 'CI'
 - name: baseTestingUrl
@@ -66,12 +66,12 @@ jobs:
         echo "Directory of pipeline workspace:"
         tree $(Pipeline.Workspace)
     displayName: 'Display Files'
-    continueOnError: true
+    condition: succeededOrFailed()
 
   - task: PublishPipelineArtifact@1
     displayName: 'Publish PW Artifacts'
     inputs:
-      targetPath: ${{ parameters.testScriptPath }}/test-results
+      targetPath: ${{ parameters.testScriptPath }}/playwright-report
       artifact: playwright-report
       publishLocation: 'pipeline'
     condition: succeededOrFailed()
@@ -79,6 +79,8 @@ jobs:
   - task: PublishTestResults@2
     displayName: 'Publish PW Test Results'
     inputs:
-      testResultsFormat: 'VSTest'
-      testResultsFiles: '**/${{ parameters.testScriptPath }}/test-results/*.trx'
+      testResultsFormat: 'JUnit'
+      testResultsFiles: '**/${{ parameters.testScriptPath }}/test-results/*.xml'
+      # testResultsFormat: 'VSTest'
+      # testResultsFiles: '**/${{ parameters.testScriptPath }}/test-results/*.trx'
     condition: succeededOrFailed()
