@@ -1,12 +1,8 @@
 import { defineConfig, devices } from '@playwright/test';
 
-
-
-
 if (process.env.NODE_ENV === 'development'){
   require('dotenv').config({path: '/.env'});
 }
-
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -22,7 +18,12 @@ export default defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: ['junit', { outputFile: './test-results/e2e-junit-results.xml' }],
+  reporter: [
+    ['html'],
+    ['line'],
+    ['junit', { outputFile: './test-results/results.xml' }],
+    ['playwright-trx-reporter', { outputFile: "./test-results/output.trx" }]
+  ],
   /* reporter: 'html', */
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
@@ -30,7 +31,8 @@ export default defineConfig({
     // baseURL: 'http://127.0.0.1:3000',
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: 'on-first-retry',
+    // trace: 'on-first-retry',
+    trace: 'retain-on-failure',
   },
 
   /* Configure projects for major browsers */
