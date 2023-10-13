@@ -69,12 +69,21 @@ jobs:
     condition: succeededOrFailed()
 
   - task: PublishPipelineArtifact@1
-    displayName: 'Publish PW Artifacts'
+    displayName: 'Publish PW Report Artifact'
     inputs:
       targetPath: $(Pipeline.Workspace)/s/playwright-report
       artifact: playwright-report
       publishLocation: 'pipeline'
     condition: succeededOrFailed()
+
+  # See https://marketplace.visualstudio.com/items?itemName=LakshayKaushik.PublishHTMLReports
+  - task: publishhtmlreport@1
+    displayName: 'Create PW Report Tab'
+    inputs:
+      htmlType: 'genericHTML'
+      htmlPath: '$(Pipeline.Workspace)/s/playwright-report/index.html'
+      # htmlType: 'Jmeter'
+      # JmeterReportsPath: '$(Build.SourcesDirectory)/LoadReports'    
 
   - task: PublishTestResults@2
     displayName: 'Publish PW Test Results'
