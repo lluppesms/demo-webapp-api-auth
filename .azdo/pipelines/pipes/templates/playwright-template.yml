@@ -69,7 +69,7 @@ jobs:
     condition: succeededOrFailed()
        
   - task: PublishTestResults@2
-    displayName: 'Publish PW Test Results'
+    displayName: 'Report Test Results'
     inputs:
       testResultsFormat: 'JUnit'
       testResultsFiles: '**/${{ parameters.testScriptPath }}/test-results/*.xml'
@@ -77,35 +77,29 @@ jobs:
       # testResultsFiles: '**/${{ parameters.testScriptPath }}/test-results/*.trx'
     condition: succeededOrFailed()
 
-  # The playwright program generats a nice report report which can be saved as an artifact
+  # The playwright program generates a nice report file which can be saved as an artifact and viewed later
   - task: PublishPipelineArtifact@1
-    displayName: 'Publish PW Report Artifact'
+    displayName: 'Publish Report as Artifact'
     inputs:
       targetPath: $(Pipeline.Workspace)/s/playwright-report
       artifact: playwright-report
       publishLocation: 'pipeline'
     condition: succeededOrFailed()
 
-  # To easily visualize the Playwright report in the portal, you need an extension that supports HTML.
-  # These are the best options I've found, but neither works *quite* right... :( 
+  # To easily visualize the Playwright report in the portal, you would need an extension that supports HTML.
+  # These are the best options I've found, but neither works *quite* right with this report... :( 
   # See: https://marketplace.visualstudio.com/items?itemName=LakshayKaushik.PublishHTMLReports
-  # However, this extension only sort of works - it's not shown visually although you can see the HTML is in the inspector
+  # This extension sorta kinda works - you can see the HTML is in the inspector but you can't see it visually on screen...
   # - task: publishhtmlreport@1
   #   displayName: 'Create PW Report Tab'
   #   inputs:
   #     htmlType: 'genericHTML'
   #     htmlPath: '$(Pipeline.Workspace)/s/playwright-report/index.html'
-  #     # htmlType: 'Jmeter'
-  #     # JmeterReportsPath: '$(Build.SourcesDirectory)/LoadReports'    
-  # This task also sort of published the report and you can see it in the portal, but once you click on any link it breaks
+  # This task also sort of published the report and you can see it present in the portal, but once you click on any link it breaks
   # See: https://marketplace.visualstudio.com/items?itemName=JakubRumpca.azure-pipelines-html-report&ssr=false#overview
+  # And this extension patches the JakubRumpca and updates that source, but it behaves exactly the same
+  # See: https://marketplace.visualstudio.com/items?itemName=awardedsolutions.azure-pipelines-html-report-awardedsolutions
   # - task: PublishHtmlReport@1
   #   displayName: 'Create PW Report Tab'
   #   inputs:
   #     reportDir: '$(Pipeline.Workspace)/s/playwright-report/index.html'
-
-  # See: https://marketplace.visualstudio.com/items?itemName=awardedsolutions.azure-pipelines-html-report-awardedsolutions
-  - task: PublishHtmlReport@1
-    displayName: 'Create PW Report Tab'
-    inputs:
-      reportDir: '$(Pipeline.Workspace)/s/playwright-report/index.html'
