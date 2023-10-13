@@ -1,9 +1,9 @@
 import { test, expect } from '@playwright/test';
-import { defineConfig } from '@playwright/test';
-export default defineConfig({
-  reporter:   ['html', { open: 'never' }]
-  // reporter: ['junit', { outputFile: './test-results/e2e-junit-results.xml' }]
-});
+// import { defineConfig } from '@playwright/test';
+// export default defineConfig({
+//   reporter:   ['html', { open: 'never' }]
+//   // reporter: ['junit', { outputFile: './test-results/e2e-junit-results.xml' }]
+// });
 
 console.log("COMPUTERNAME: ", process.env.COMPUTERNAME)
 if (process.env.COMPUTERNAME?.startsWith("DESKTOP")){
