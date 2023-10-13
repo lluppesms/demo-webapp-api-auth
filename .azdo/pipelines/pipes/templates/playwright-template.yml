@@ -71,7 +71,7 @@ jobs:
   - task: PublishPipelineArtifact@1
     displayName: 'Publish PW Artifacts'
     inputs:
-      targetPath: $(Pipeline.Workspace)/playwright-report
+      targetPath: $(Pipeline.Workspace)/s/playwright-report
       artifact: playwright-report
       publishLocation: 'pipeline'
     condition: succeededOrFailed()
