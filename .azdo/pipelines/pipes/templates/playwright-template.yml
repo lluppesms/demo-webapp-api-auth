@@ -69,15 +69,21 @@ jobs:
     condition: succeededOrFailed()
 
   # To easily visualize the Playwright report in the portal, you need an extension like this one:
-  # See https://marketplace.visualstudio.com/items?itemName=LakshayKaushik.PublishHTMLReports
-  - task: publishhtmlreport@1
+  # See: https://marketplace.visualstudio.com/items?itemName=LakshayKaushik.PublishHTMLReports
+  # - task: publishhtmlreport@1
+  #   displayName: 'Create PW Report Tab'
+  #   inputs:
+  #     htmlType: 'genericHTML'
+  #     htmlPath: '$(Pipeline.Workspace)/s/playwright-report/index.html'
+  #     # htmlType: 'Jmeter'
+  #     # JmeterReportsPath: '$(Build.SourcesDirectory)/LoadReports'    
+
+  # See: https://marketplace.visualstudio.com/items?itemName=JakubRumpca.azure-pipelines-html-report&ssr=false#overview
+  - task: PublishHtmlReport@1
     displayName: 'Create PW Report Tab'
     inputs:
-      htmlType: 'genericHTML'
-      htmlPath: '$(Pipeline.Workspace)/s/playwright-report/index.html'
-      # htmlType: 'Jmeter'
-      # JmeterReportsPath: '$(Build.SourcesDirectory)/LoadReports'    
-
+      reportDir: '$(Pipeline.Workspace)/s/playwright-report/index.html'
+        
   - task: PublishPipelineArtifact@1
     displayName: 'Publish PW Report Artifact'
     inputs:
