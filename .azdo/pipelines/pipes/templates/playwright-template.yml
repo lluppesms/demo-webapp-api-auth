@@ -68,14 +68,7 @@ jobs:
     displayName: 'Display Files'
     condition: succeededOrFailed()
 
-  - task: PublishPipelineArtifact@1
-    displayName: 'Publish PW Report Artifact'
-    inputs:
-      targetPath: $(Pipeline.Workspace)/s/playwright-report
-      artifact: playwright-report
-      publishLocation: 'pipeline'
-    condition: succeededOrFailed()
-
+  # To easily visualize the Playwright report in the portal, you need an extension like this one:
   # See https://marketplace.visualstudio.com/items?itemName=LakshayKaushik.PublishHTMLReports
   - task: publishhtmlreport@1
     displayName: 'Create PW Report Tab'
@@ -84,6 +77,14 @@ jobs:
       htmlPath: '$(Pipeline.Workspace)/s/playwright-report/index.html'
       # htmlType: 'Jmeter'
       # JmeterReportsPath: '$(Build.SourcesDirectory)/LoadReports'    
+
+  - task: PublishPipelineArtifact@1
+    displayName: 'Publish PW Report Artifact'
+    inputs:
+      targetPath: $(Pipeline.Workspace)/s/playwright-report
+      artifact: playwright-report
+      publishLocation: 'pipeline'
+    condition: succeededOrFailed()
 
   - task: PublishTestResults@2
     displayName: 'Publish PW Test Results'
