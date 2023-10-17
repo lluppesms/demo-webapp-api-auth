@@ -13,93 +13,93 @@ parameters:
 - name: testScriptPath
   default: ''
 
-# jobs:
+jobs:
 # - deployment: RunPlaywrightTests
 #   displayName: Run Playwright Tests
 #   environment: ${{ parameters.environment }}
-# - job: RunTestsJob
-#   displayName: Run Tests Job
+- job: RunTestsJob
+  displayName: Run Tests Job
 
-variables:
-  - group: ${{ parameters.variableGroupName }}
-  - group: ${{ parameters.keyVaultVariableGroupName }}
+  variables:
+    - group: ${{ parameters.variableGroupName }}
+    - group: ${{ parameters.keyVaultVariableGroupName }}
 
-steps:
-- task: CmdLine@2
-  displayName: 'Display Variables and Tree'
-  inputs:
-    script: |
-      echo "variableGroupName=${{ parameters.variableGroupName }}"
-      echo "keyVaultVariableGroupName=${{ parameters.keyVaultVariableGroupName }}"
-      echo "environment=${{ parameters.environment }}"
-      echo "baseTestingUrl=${{ parameters.baseTestingUrl }}"
-      echo "testScriptPath=${{ parameters.testScriptPath }}"
-      echo "Directory of pipeline workspace:"
-      tree $(Pipeline.Workspace)
-  continueOnError: true
+  steps:
+  - task: CmdLine@2
+    displayName: 'Display Variables and Tree'
+    inputs:
+      script: |
+        echo "variableGroupName=${{ parameters.variableGroupName }}"
+        echo "keyVaultVariableGroupName=${{ parameters.keyVaultVariableGroupName }}"
+        echo "environment=${{ parameters.environment }}"
+        echo "baseTestingUrl=${{ parameters.baseTestingUrl }}"
+        echo "testScriptPath=${{ parameters.testScriptPath }}"
+        echo "Directory of pipeline workspace:"
+        tree $(Pipeline.Workspace)
+    continueOnError: true
 
-- task: NodeTool@0
-  displayName: 'Install Node.js'
-  inputs:
-    versionSpec: '18'
+  - task: NodeTool@0
+    displayName: 'Install Node.js'
+    inputs:
+      versionSpec: '18'
 
-- script: npm ci
-  displayName: 'npm Clean Install'
-  workingDirectory: ${{ parameters.testScriptPath }}
+  - script: npm ci
+    displayName: 'npm Clean Install'
+    workingDirectory: ${{ parameters.testScriptPath }}
 
-- script: npx playwright install --with-deps
-  displayName: 'Install Playwright Browsers'
-  workingDirectory: ${{ parameters.testScriptPath }}
+  - script: npx playwright install --with-deps
+    displayName: 'Install Playwright Browsers'
+    workingDirectory: ${{ parameters.testScriptPath }}
 
-- script: npx playwright test
-  workingDirectory: ${{ parameters.testScriptPath }}
-  displayName: 'Run Playwright tests'
-  env:
-    CI: 'true'
-    BASE_URL: ${{ parameters.baseTestingUrl }}
-    TESTUSER: $(PLAYWRIGHT_USERNAME)
-    TESTPASSWORD: $(PLAYWRIGHT_PASSWORD)
+  - script: npx playwright test
+    workingDirectory: ${{ parameters.testScriptPath }}
+    displayName: 'Run Playwright tests'
+    env:
+      CI: 'true'
+      BASE_URL: ${{ parameters.baseTestingUrl }}
+      TESTUSER: $(PLAYWRIGHT_USERNAME)
+      TESTPASSWORD: $(PLAYWRIGHT_PASSWORD)
 
-- task: CmdLine@2
-  inputs:
-    script: |
-      echo "Directory of pipeline workspace:"
-      tree $(Pipeline.Workspace)
-  displayName: 'Display Files'
-  condition: succeededOrFailed()
-      
-- task: PublishTestResults@2
-  displayName: 'Report Test Results'
-  inputs:
-    testResultsFormat: 'JUnit'
-    testResultsFiles: '**/${{ parameters.testScriptPath }}/test-results/*.xml'
-    # testResultsFormat: 'VSTest'
-    # testResultsFiles: '**/${{ parameters.testScriptPath }}/test-results/*.trx'
-  condition: succeededOrFailed()
+  - task: CmdLine@2
+    inputs:
+      script: |
+        echo "Directory of pipeline workspace:"
+        tree $(Pipeline.Workspace)
+    displayName: 'Display Files'
+    condition: succeededOrFailed()
+        
+  - task: PublishTestResults@2
+    displayName: 'Report Test Results'
+    inputs:
+      testResultsFormat: 'JUnit'
+      testResultsFiles: '**/${{ parameters.testScriptPath }}/test-results/*.xml'
+      # testResultsFormat: 'VSTest'
+      # testResultsFiles: '**/${{ parameters.testScriptPath }}/test-results/*.trx'
+    condition: succeededOrFailed()
 
-# The playwright program generates a nice report file which can be saved as an artifact and viewed later
-- task: PublishPipelineArtifact@1
-  displayName: 'Publish Report as Artifact'
-  inputs:
-    targetPath: $(Pipeline.Workspace)/s/playwright-report
-    artifact: playwright-report
-    publishLocation: 'pipeline'
-  condition: succeededOrFailed()
+  # The playwright program generates a nice report file which can be saved as an artifact and viewed later
+  - task: PublishPipelineArtifact@1
+    displayName: 'Publish Report as Artifact'
+    inputs:
+      targetPath: $(Pipeline.Workspace)/s/playwright-report
+      artifact: playwright-report
+      publishLocation: 'pipeline'
+    condition: succeededOrFailed()
 
-# To easily visualize the Playwright report in the portal, you would need an extension that supports HTML.
-# These are the best options I've found, but neither works *quite* right with this report... :( 
-# See: https://marketplace.visualstudio.com/items?itemName=LakshayKaushik.PublishHTMLReports
-# This extension sorta kinda works - you can see the HTML is in the inspector but you can't see it visually on screen...
-# - task: publishhtmlreport@1
-#   displayName: 'Create PW Report Tab'
-#   inputs:
-#     htmlType: 'genericHTML'
-#     htmlPath: '$(Pipeline.Workspace)/s/playwright-report/index.html'
-# This task also sort of published the report and you can see it present in the portal, but once you click on any link it breaks
-# See: https://marketplace.visualstudio.com/items?itemName=JakubRumpca.azure-pipelines-html-report&ssr=false#overview
-# And this extension patches the JakubRumpca and updates that source, but it behaves exactly the same
-# See: https://marketplace.visualstudio.com/items?itemName=awardedsolutions.azure-pipelines-html-report-awardedsolutions
-# - task: PublishHtmlReport@1
-#   displayName: 'Create PW Report Tab'
-#   inputs:
-#     reportDir: '$(Pipeline.Workspace)/s/playwright-report/index.html'
+  # To easily visualize the Playwright report in the portal, you would need an extension that supports HTML.
+  # These are the best options I've found, but neither works *quite* right with this report... :( 
+  # See: https://marketplace.visualstudio.com/items?itemName=LakshayKaushik.PublishHTMLReports
+  # This extension sorta kinda works - you can see the HTML is in the inspector but you can't see it visually on screen...
+  # - task: publishhtmlreport@1
+  #   displayName: 'Create PW Report Tab'
+  #   inputs:
+  #     htmlType: 'genericHTML'
+  #     htmlPath: '$(Pipeline.Workspace)/s/playwright-report/index.html'
+  # This task also sort of published the report and you can see it present in the portal, but once you click on any link it breaks
+  # See: https://marketplace.visualstudio.com/items?itemName=JakubRumpca.azure-pipelines-html-report&ssr=false#overview
+  # And this extension patches the JakubRumpca and updates that source, but it behaves exactly the same
+  # See: https://marketplace.visualstudio.com/items?itemName=awardedsolutions.azure-pipelines-html-report-awardedsolutions
+  # - task: PublishHtmlReport@1
+  #   displayName: 'Create PW Report Tab'
+  #   inputs:
+  #     reportDir: '$(Pipeline.Workspace)/s/playwright-report/index.html'
