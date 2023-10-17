@@ -9,11 +9,11 @@ pool:
 # ------------------------------------------------------------------------------------------------------------------------
 trigger: none
 
-parameters:
-  - name: runPlaywright
-    displayName: Run Playwright Tests
-    type: boolean
-    default: true
+# parameters:
+#   - name: runPlaywright
+#     displayName: Run Playwright Tests
+#     type: boolean
+#     default: true
 
 stages:
 # ------------------------------------------------------------------------------------------------------------------------

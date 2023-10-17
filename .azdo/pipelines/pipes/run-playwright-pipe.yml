@@ -12,7 +12,7 @@ parameters:
 stages:
 # ------------------------------------------------------------------------------------------------------------------------
 - stage: SmokeTestApp
-  displayName: Smoke Test App (${{ parameters.environment }})
+  displayName: Smoke Test App
   jobs:
   - template: templates/playwright-template.yml
     parameters:
