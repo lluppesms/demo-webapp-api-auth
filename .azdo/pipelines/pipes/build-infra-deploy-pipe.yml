@@ -33,12 +33,20 @@ parameters:
 - name: buildConfiguration
   default: 'Release'
 
+- name: runPlaywrightTests
+  default: 'false'
+- name: pwVariableGroupName
+  default: ''
+- name: pwKVGroupName
+  default: ''
+- name: pwScriptPath
+  default: ''
+
 stages:
 # ------------------------------------------------------------------------------------------------------------------------
 - stage: BuildApps
   displayName: Build Apps (${{ parameters.buildDeployApps }})
   jobs:
-
   - ${{ if or(or(eq(lower(parameters.runDevSecOpsScan), 'true'), eq(lower(parameters.runPsRuleScan), 'true')), eq(lower(parameters.runGHAzDOScan), 'true')) }}:
     - template: templates/scan-code-template.yml
       parameters:
@@ -88,3 +96,15 @@ stages:
       apiPackageName: ${{ parameters.apiPackageName }}
       webArtifactName: ${{ parameters.webArtifactName }}
       apiArtifactName: ${{ parameters.apiArtifactName }} 
+
+# ------------------------------------------------------------------------------------------------------------------------
+- stage: SmokeTestApp
+  displayName: Smoke Test App (${{ parameters.runPlaywrightTests }})
+  dependsOn: DeployApp
+  jobs:
+  - ${{ if eq(lower(parameters.runPlaywrightTests), 'true') }}:
+    - template: templates/playwright-template.yml
+      parameters:
+        pwVariableGroupName: ${{ parameters.pwVariableGroupName }}
+        pwKVGroupName: ${{ parameters.pwKVGroupName }}
+        pwScriptPath: ${{ parameters.pwScriptPath }}
