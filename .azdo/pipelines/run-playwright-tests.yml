@@ -19,8 +19,7 @@ stages:
 # ------------------------------------------------------------------------------------------------------------------------
 - template: pipes/run-playwright-pipe.yml
   parameters:
-    variableGroupName: 'Playwright'
-    keyVaultVariableGroupName: 'PlaywrightSecrets'
-    environment: 'CI'
-    baseTestingUrl: 'https://lll-playwright-web.azurewebsites.net/'
-    testScriptPath: 'playwright'
+    pwVariableGroupName: 'Playwright'
+    pwKVGroupName: 'PlaywrightSecrets'
+    pwScriptPath: 'playwright'
+    #pwBaseUrl: 'https://lll-playwright-web.azurewebsites.net/'

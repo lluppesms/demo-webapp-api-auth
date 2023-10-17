@@ -2,38 +2,34 @@
 # Template to run a Playwright test suite in an Azure DevOps pipeline
 # ----------------------------------------------------------------------------------------------------
 parameters:
-- name: variableGroupName
+- name: pwVariableGroupName
   default: ''
-- name: keyVaultVariableGroupName
+- name: pwKVGroupName
   default: ''
-- name: environment
-  default: 'CI'
-- name: baseTestingUrl
-  default: ''
-- name: testScriptPath
+# - name: pwBaseUrl
+#   default: ''
+- name: pwScriptPath
   default: ''
 
 jobs:
-# - deployment: RunPlaywrightTests
-#   displayName: Run Playwright Tests
-#   environment: ${{ parameters.environment }}
 - job: RunTestsJob
   displayName: Run Tests Job
 
   variables:
-    - group: ${{ parameters.variableGroupName }}
-    - group: ${{ parameters.keyVaultVariableGroupName }}
+    - group: ${{ parameters.pwVariableGroupName }}
+    - group: ${{ parameters.pwKVGroupName }}
+    - name: pwBaseUrl
+      value: 'https://$(webAppName).azurewebsites.net/'
 
   steps:
   - task: CmdLine@2
     displayName: 'Display Variables and Tree'
     inputs:
       script: |
-        echo "variableGroupName=${{ parameters.variableGroupName }}"
-        echo "keyVaultVariableGroupName=${{ parameters.keyVaultVariableGroupName }}"
-        echo "environment=${{ parameters.environment }}"
-        echo "baseTestingUrl=${{ parameters.baseTestingUrl }}"
-        echo "testScriptPath=${{ parameters.testScriptPath }}"
+        echo "pwVariableGroupName=${{ parameters.pwVariableGroupName }}"
+        echo "pwKVGroupName=${{ parameters.pwKVGroupName }}"
+        echo "pwBaseUrl=$(variables.pwBaseUrl)"
+        echo "pwScriptPath=${{ parameters.pwScriptPath }}"
         echo "Directory of pipeline workspace:"
         tree $(Pipeline.Workspace)
     continueOnError: true
@@ -45,18 +41,18 @@ jobs:
 
   - script: npm ci
     displayName: 'npm Clean Install'
-    workingDirectory: ${{ parameters.testScriptPath }}
+    workingDirectory: ${{ parameters.pwScriptPath }}
 
   - script: npx playwright install --with-deps
     displayName: 'Install Playwright Browsers'
-    workingDirectory: ${{ parameters.testScriptPath }}
+    workingDirectory: ${{ parameters.pwScriptPath }}
 
   - script: npx playwright test
-    workingDirectory: ${{ parameters.testScriptPath }}
     displayName: 'Run Playwright tests'
+    workingDirectory: ${{ parameters.pwScriptPath }}
     env:
       CI: 'true'
-      BASE_URL: ${{ parameters.baseTestingUrl }}
+      BASE_URL: $(pwBaseUrl)
       TESTUSER: $(PLAYWRIGHT_USERNAME)
       TESTPASSWORD: $(PLAYWRIGHT_PASSWORD)
 
@@ -71,10 +67,11 @@ jobs:
   - task: PublishTestResults@2
     displayName: 'Report Test Results'
     inputs:
+      testRunTitle: 'Playwright UI Tests'
       testResultsFormat: 'JUnit'
-      testResultsFiles: '**/${{ parameters.testScriptPath }}/test-results/*.xml'
+      testResultsFiles: '**/${{ parameters.pwScriptPath }}/test-results/*.xml'
       # testResultsFormat: 'VSTest'
-      # testResultsFiles: '**/${{ parameters.testScriptPath }}/test-results/*.trx'
+      # testResultsFiles: '**/${{ parameters.pwScriptPath }}/test-results/*.trx'
     condition: succeededOrFailed()
 
   # The playwright program generates a nice report file which can be saved as an artifact and viewed later
@@ -83,7 +80,6 @@ jobs:
     inputs:
       targetPath: $(Pipeline.Workspace)/s/playwright-report
       artifact: playwright-report
-      publishLocation: 'pipeline'
     condition: succeededOrFailed()
 
   # To easily visualize the Playwright report in the portal, you would need an extension that supports HTML.

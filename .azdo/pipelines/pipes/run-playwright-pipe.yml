@@ -2,15 +2,11 @@
 # Pipe Template to run a Playwright test
 # ------------------------------------------------------------------------------------------------------------------------
 parameters:
-- name: variableGroupName
+- name: pwVariableGroupName
   default: ''
-- name: keyVaultVariableGroupName
+- name: pwKVGroupName
   default: ''
-- name: environment
-  default: ''
-- name: baseTestingUrl
-  default: ''
-- name: testScriptPath
+- name: pwScriptPath
   default: ''
 
 stages:
@@ -20,8 +16,6 @@ stages:
   jobs:
   - template: templates/playwright-template.yml
     parameters:
-      variableGroupName: ${{ parameters.variableGroupName }}
-      keyVaultVariableGroupName: ${{ parameters.keyVaultVariableGroupName }}
-      environment: ${{ parameters.environment }}
-      baseTestingUrl: ${{ parameters.baseTestingUrl }}
-      testScriptPath: ${{ parameters.testScriptPath }}
+      pwVariableGroupName: ${{ parameters.pwVariableGroupName }}
+      pwKVGroupName: ${{ parameters.pwKVGroupName }}
+      pwScriptPath: ${{ parameters.pwScriptPath }}

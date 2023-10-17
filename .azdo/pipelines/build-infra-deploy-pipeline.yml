@@ -27,7 +27,7 @@ parameters:
     displayName: Run GHAS Scan
     type: boolean
     default: false
-  - name: runPlaywright
+  - name: runPlaywrightTests
     displayName: Run Playwright Tests
     type: boolean
     default: false
@@ -53,10 +53,9 @@ variables:
     value:  'services/'
   - name: workingDirectoryInfra
     value:  'infra/'
-  
-stages:
+
 # ------------------------------------------------------------------------------------------------------------------------
-  
+stages:
 - template: pipes/build-infra-deploy-pipe.yml
   parameters:
     variableGroupName: 'Playwright'
@@ -77,3 +76,9 @@ stages:
 
     workingDirectoryCode: ${{ variables.workingDirectoryCode }}
     workingDirectoryInfra: ${{ variables.workingDirectoryInfra }}
+
+    runPlaywrightTests: ${{ parameters.runPlaywrightTests }}
+    pwVariableGroupName: 'Playwright'
+    pwKVGroupName: 'PlaywrightSecrets'
+    pwScriptPath: 'playwright'
+    #pwBaseUrl: 'https://lll-playwright-web.azurewebsites.net/'
