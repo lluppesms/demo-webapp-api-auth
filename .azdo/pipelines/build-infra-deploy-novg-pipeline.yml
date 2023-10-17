@@ -59,7 +59,7 @@ variables:
   
 stages:
 # ------------------------------------------------------------------------------------------------------------------------
-- template: pipes/build-infra-deploy-pipe.yml
+- template: pipes/build-infra-deploy-novg-pipe.yml
   parameters:
     createInfra: ${{ parameters.createInfra }}
     buildDeployApps: ${{ parameters.buildDeployApps }}

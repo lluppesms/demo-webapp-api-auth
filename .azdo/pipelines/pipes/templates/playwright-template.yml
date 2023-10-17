@@ -79,7 +79,7 @@ jobs:
     displayName: 'Publish Report as Artifact'
     inputs:
       targetPath: $(Pipeline.Workspace)/s/playwright-report
-      artifact: playwright-report
+      artifact: playwright-test-results
     condition: succeededOrFailed()
 
   # To easily visualize the Playwright report in the portal, you would need an extension that supports HTML.

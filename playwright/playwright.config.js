@@ -22,7 +22,7 @@ export default defineConfig({
     // ['line'],
     // ['playwright-trx-reporter', { outputFile: "./test-results/output.trx" }],
     ['html', { open: 'never' }],
-    ['junit', { outputFile: './test-results/results.xml' }]
+    ['junit', { outputFile: './test-results/playwright-results.xml' }]
   ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
@@ -32,6 +32,7 @@ export default defineConfig({
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     // trace: 'on-first-retry',
     trace: 'retain-on-failure',
+    screenshot: 'on'
   },
 
   /* Configure projects for major browsers */
