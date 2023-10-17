@@ -9,12 +9,6 @@ pool:
 # ------------------------------------------------------------------------------------------------------------------------
 trigger: none
 
-# parameters:
-#   - name: runPlaywright
-#     displayName: Run Playwright Tests
-#     type: boolean
-#     default: true
-
 stages:
 # ------------------------------------------------------------------------------------------------------------------------
 - template: pipes/run-playwright-pipe.yml
@@ -22,4 +16,3 @@ stages:
     pwVariableGroupName: 'Playwright'
     pwKVGroupName: 'PlaywrightSecrets'
     pwScriptPath: 'playwright'
-    #pwBaseUrl: 'https://lll-playwright-web.azurewebsites.net/'

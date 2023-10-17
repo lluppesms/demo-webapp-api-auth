@@ -81,4 +81,3 @@ stages:
     pwVariableGroupName: 'Playwright'
     pwKVGroupName: 'PlaywrightSecrets'
     pwScriptPath: 'playwright'
-    #pwBaseUrl: 'https://lll-playwright-web.azurewebsites.net/'

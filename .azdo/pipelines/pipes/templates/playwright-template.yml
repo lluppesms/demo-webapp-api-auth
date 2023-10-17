@@ -6,8 +6,6 @@ parameters:
   default: ''
 - name: pwKVGroupName
   default: ''
-# - name: pwBaseUrl
-#   default: ''
 - name: pwScriptPath
   default: ''
 
