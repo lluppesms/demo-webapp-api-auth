@@ -17,7 +17,6 @@ parameters:
 
 stages:
 # ------------------------------------------------------------------------------------------------------------------------
-  
 - template: pipes/run-playwright-pipe.yml
   parameters:
     variableGroupName: 'Playwright'
