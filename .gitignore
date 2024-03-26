@@ -353,3 +353,5 @@ services/Demo.WebUI/appsettings.development.json
 /test-results/
 /playwright-report/
 /playwright/.cache/
+playwright/test-results/*.*
+playwright/.env
