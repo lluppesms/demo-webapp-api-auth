@@ -1,20 +1,11 @@
-﻿using Azure.Core;
-using Azure.Identity;
-
-using Demo.WebUI.Models;
+﻿using Demo.WebUI.Models;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Demo.WebUI.Controllers
@@ -35,6 +26,7 @@ namespace Demo.WebUI.Controllers
 
         public async Task<ActionResult> Index()
         {
+            _ = await Task.FromResult(true);
             return View(new HomeViewModel(this.HttpContext.User.Claims));
         }
 
